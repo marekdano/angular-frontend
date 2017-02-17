@@ -1,0 +1,41 @@
+<div [formGroup]="configForm">
+<div class="card">
+  <div class="card-block">
+    <div class="row">
+      <div class="col-md-6">
+        <div formGroupName="PeriodicTimeDefinition">
+          <div class="form-group">
+            <p-dropdown [options]="frequencies" 
+                        formControlName="FrequencyId"
+                        [style]="{'width':'100%'}" 
+                        [autoWidth]="false"
+                        pTooltip="Frequency" 
+                        tooltipPosition="left"></p-dropdown>
+          </div>
+          <div class="form-group">
+            <input pInputText class="input-field" 
+                   formControlName="OffsetInSeconds" 
+                   pTooltip="Offset in Seconds" 
+                   tooltipPosition="left" 
+                   placeholder="Offset in Seconds"
+                   autocomplete="off"/>
+            <div class="ui-message ui-messages-error ui-corner-all" 
+                 *ngIf="!configForm.controls['PeriodicTimeDefinition']['controls']['OffsetInSeconds'].valid && configForm.controls['PeriodicTimeDefinition']['controls']['OffsetInSeconds'].dirty">
+              <i class="fa fa-close"></i>
+                Offset in Seconds must be a number.
+            </div>
+          </div>
+          <div class="form-group">
+            <p-dropdown [options]="timeUnits" 
+                        formControlName="ResetTimeUnitId"
+                        [style]="{'width':'100%'}" 
+                        [autoWidth]="false"
+                        pTooltip="Reset Time Units" 
+                        tooltipPosition="left"></p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

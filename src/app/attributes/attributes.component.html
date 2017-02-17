@@ -1,0 +1,48 @@
+
+<div [formGroup]="configForm">
+  <div formArrayName="AllowableAttributes">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="card">
+          <h6 class="card-header">Attributes</h6>
+          <div class="card-block">
+            <div class="list-group">
+              <div class="list-group-item" 
+                  *ngFor="let attribute of configForm.controls['AllowableAttributes']['controls']; let i=index"
+                  (click)="callAttribute(i)"
+                  [class.active-attribute]="selectedAttributeId == i">
+                <div [formGroupName]="i">
+                  <div>
+                    <i class="fa fa-circle fa-2x" 
+                      [class.valid]="configForm.controls['DestinationUnitId'].status === 'VALID' && attribute.status === 'VALID' && attribute.controls['AttributeAndValue']['controls']['ValueConfig']['controls']['CalculationTypeId'].value"
+                      [class.invalid]="configForm.controls['DestinationUnitId'].status === 'INVALID' 
+                                        || attribute.status === 'INVALID' 
+                                        || attribute.controls['AttributeAndValue']['controls']['ValueConfig']['controls']['CalculationTypeId'].status === 'INVALID'"  
+                      [class.starting]="attribute.controls['AttributeAndValue']['controls']['ValueConfig']['controls']['CalculationTypeId'].status === 'VALID'
+                                        && !attribute.controls['AttributeAndValue']['controls']['ValueConfig']['controls']['CalculationTypeId'].value"
+                      aria-hidden="true">
+                    </i>
+                    <span class="attribute-text"
+                          [class.required]="attribute.controls['IsRequired'].value"> 
+                      {{ attribute.controls['AttributeTypeName'].value }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div *ngFor="let attribute of configForm.controls['AllowableAttributes']['controls']; let i=index"> 
+          <!--{{ attribute }}-->
+          <div [formGroupName]="i">
+            <app-calculation-type *ngIf="selectedAttribute && selectedAttributeId == i"
+              [form-group-level-2]="attribute"></app-calculation-type>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

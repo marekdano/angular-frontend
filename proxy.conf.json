@@ -1,0 +1,8 @@
+{
+  "/": {
+    "target": "http://iqsconfig.westeurope.cloudapp.azure.com",
+    "changeOrigin": true,
+    "secure": false,
+    "logLevel": "debug"
+  }
+}

@@ -1,0 +1,139 @@
+
+* {
+   font-size: 14px;
+}
+
+/* Modifications for IE11 */
+
+//Remove IE11's “clear field” X button in input fields.
+input::-ms-clear {
+  display: none;
+}
+
+/******************************************
+               Global Style
+*******************************************/
+.main-title {
+  margin: 4rem 0 2rem;
+}
+
+.vertical-box {
+  display: flex;
+}
+
+.loading {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 4.2rem;
+  }
+}
+
+.dialog-column {
+  min-height: 320px;
+}
+
+.input-field {
+  width: 100%;
+}
+
+.file-input {
+  width: 50%;
+}
+
+.index-input {
+  width: 100%;
+}
+
+.row.vertical-align {
+  border-bottom: 2px dotted rgba(0, 0, 0, 0.25);
+
+  @media screen and (min-width: 768px) {
+    display: -ms-flexbox;
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+.checkbox-bottom-line {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  margin: 1.4rem -15px 0.5rem -15px;
+  padding: 0 15px;
+}
+
+.none-lines {
+  border: none;
+}
+
+.top-space {
+  margin-top: 1rem;
+}
+
+/******************************************
+     Global Style for PrimeNG components
+*******************************************/
+%dropdown-icon {
+  padding: 4px 9px;
+}
+
+.ui-g-6 {
+  padding: 1rem;
+}
+
+.ui-dialog {
+  width: inherit;
+}
+
+.ui-dropdown {
+  .config-form & label.ui-dropdown-label {
+    width: 12rem;
+  }
+
+  .method-form & label.ui-dropdown-label {
+    width: 100%;
+  }
+
+  & .ui-dropdown-trigger {
+    @extend %dropdown-icon;
+    width: 33px;
+
+    .ui-fluid & {
+      @extend %dropdown-icon;
+    }
+  }
+}
+
+.ui-button {
+  margin-left: .4rem;
+  padding: .1rem;
+}
+
+.ui-button-icon-only .fa {
+  margin-left: -0.54rem;
+  padding-top: 0.06rem;
+}
+
+.ui-datatable {
+  .ui-datatable-footer {
+    text-align: left;
+  }
+}
+
+label, button {
+  font-weight: bold;
+}
+
+.ui-fluid .ui-spinner .ui-spinner-button {
+  width: 1rem;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.active-attribute {
+  background-color: lightyellow;
+}

@@ -1,0 +1,145 @@
+
+<div [formGroup]="configForm">
+<div class="ui-layout">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <h6 class="card-header">Start Time</h6>
+        <div class="card-block">
+          <div formGroupName="StartTimeConfig">
+            <p-dropdown [options]="timeTypes" formControlName="TimeConfigTypeId" (onChange)="onTimeTypeChange($event.value, configForm.controls['StartTimeConfig'])" [autoWidth]="false" [style]="{'width':'60%'}"></p-dropdown>
+            <div [ngSwitch]="configForm.controls['StartTimeConfig']['controls']['TimeConfigTypeId'].value">
+              <tt-layout-one *ngSwitchCase="2" 
+                             [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-one> 
+              <tt-layout-two *ngSwitchCase="3" 
+                             [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-two> 
+              <tt-layout-three *ngSwitchCase="4" 
+                               [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-three> 
+              <tt-layout-four *ngSwitchCase="5" 
+                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-four>
+              <tt-layout-five *ngSwitchCase="6" 
+                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+              <tt-layout-six *ngSwitchCase="7" 
+                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-six>
+              <tt-layout-five *ngSwitchCase="8" 
+                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+              <tt-layout-five *ngSwitchCase="9" 
+                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+              <div *ngSwitchDefault>
+                <div class="alert alert-info" role="alert">
+                  Please select the correct Start Time Type.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <h6 class="card-header">End Time</h6>
+        <div class="card-block">
+          <div formGroupName="EndTimeConfig">
+            <p-dropdown [options]="timeTypes" formControlName="TimeConfigTypeId" (onChange)="onTimeTypeChange($event.value, configForm.controls['EndTimeConfig'], true)" [autoWidth]="false" [style]="{'width':'60%'}"></p-dropdown>
+            <div [ngSwitch]="configForm.controls['EndTimeConfig']['controls']['TimeConfigTypeId'].value">
+              <tt-layout-one *ngSwitchCase="2" 
+                             [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-one> 
+              <tt-layout-two *ngSwitchCase="3" 
+                             [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-two> 
+              <tt-layout-three *ngSwitchCase="4" 
+                               [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-three>
+              <tt-layout-four *ngSwitchCase="5" 
+                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-four>
+              <tt-layout-five *ngSwitchCase="6" 
+                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+              <tt-layout-six *ngSwitchCase="7" 
+                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-six>
+              <tt-layout-five *ngSwitchCase="8" 
+                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+              <tt-layout-five *ngSwitchCase="9" 
+                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+              <div *ngSwitchDefault>
+                <div class="alert alert-info" role="alert">
+                  Please select the correct End Time Type.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-block">
+          <div class="row">
+            <div class="col-md-3">
+              <div formGroupName="Tag">
+                <div class="form-group">
+                  <p-dropdown [options]="dataSources" 
+                              formControlName="Source" 
+                              [style]="{'width':'100%'}"
+                              editable="editable" 
+                              [autoWidth]="false"
+                              pTooltip="Data Source" 
+                              tooltipPosition="left"
+                              autocomplete="off">
+                  </p-dropdown>
+                </div>
+                <div class="form-group">
+                   <p-dropdown [options]="tags" 
+                              formControlName="Name" 
+                              [style]="{'width':'100%'}"
+                              editable="editable" 
+                              filter="filter"
+                              [autoWidth]="false"
+                              pTooltip="Tag Name" 
+                              tooltipPosition="left"
+                              autocomplete="off">
+                  </p-dropdown>
+                </div>
+                <button pButton (click)="showDialogToAddTagAlias($event)" class="btn-add-alias" label="Add Alias"></button>
+                <p-dataTable [value]="tagAliases">
+                  <p-column field="ValueFromTag" header="Value" [sortable]="true"></p-column>
+                  <p-column field="Alias" header="Alias" [sortable]="true"></p-column>
+                </p-dataTable>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<form [formGroup]="tagAliasForm">
+  <p-dialog header="Add Tag Alias" [(visible)]="displayDialog" [responsive]="true" [resizable]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid method-form">  
+      <div class="form-group">
+        <label for="">Value</label>
+        <input pInputText formControlName="ValueFromTag" placeholder="Required" autocomplete="off"/>
+        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!tagAliasForm.controls['ValueFromTag'].valid && tagAliasForm.controls['ValueFromTag'].dirty">
+          <i class="fa fa-close"></i>
+            Value must be a number.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="alias">Alias</label>
+        <input pInputText formControlName="Alias" placeholder="Required" autocomplete="off"/>
+        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!tagAliasForm.controls['Alias'].valid && tagAliasForm.controls['Alias'].dirty">
+          <i class="fa fa-close"></i>
+            Alias is required.
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+        <button pButton type="submit" [disabled]="!tagAliasForm.valid" label="Save" (click)="onSubmitTagAlias(tagAliasForm.value, $event)"></button>
+      </div>
+    </footer>
+  </p-dialog>
+</form>
+

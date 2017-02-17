@@ -1,0 +1,90 @@
+
+<h2 class="main-title">Configuration</h2>
+
+<p-growl [value]="msgs" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
+<p-growl [value]="successfulMsgs" sticky="false" life="3000"></p-growl>
+
+<!--<section *ngIf="errorMsg">
+  {{errorMsg}}
+</section>-->
+<div class="main-form">
+  <form [formGroup]="configForm" novalidate (ngSubmit)="onSubmit(configForm.value)">
+  <div class="card">
+    <h5 class="card-header">Unit</h5>
+    <div class="card-block config-form">
+      <div class="row">
+        <div class="col-md-10">
+          <!--<div class="row">-->
+            <div class="col-md-4 vertical-box ">
+              <p-dropdown [options]="containers" formControlName="ContainerKey" (onChange)="onContainerChange($event.value)" filter="filter" [autoWidth]="false"></p-dropdown>
+              <app-create-container label={{label}} (errorMsg)="errorMsg($event)" (containerAdded)="getUpdatedContainers()"></app-create-container>
+            </div>
+            <div formArrayName="Methods">
+              <div *ngIf="configForm.controls['Methods'].value.length == 0 && selectedContainer">
+                <div class="col-md-3 vertical-box">
+                  <p-dropdown [options]="methods" [autoWidth]="false"></p-dropdown>
+                  <app-create-method *ngIf="selectedContainer && !errorMessage" (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
+                </div>
+              </div>
+              <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
+                <div [formGroupName]="i">
+                  <div *ngIf="(configForm.controls['Methods']['controls']).length-1 == i">
+                    <div class="col-md-3 vertical-box">
+                      <p-dropdown [options]="methods" (onChange)="onMethodChange($event.value)" formControlName="MethodId" [autoWidth]="false"></p-dropdown>
+                      <app-create-method *ngIf="selectedContainer" [unique-methods-defined]="uniqueMethodsDefined"
+                                      (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
+                    </div>
+                </div>
+                </div>
+              </div>
+              
+              <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
+                <div [formGroupName]="i">
+                  <div *ngIf="selectedMethod && destinationContainer && selectedMethod['id'] == i">
+                    <div class="col-md-3 vertical-box">
+                      DestinationUnitId: {{ method['controls']['DestinationUnitId'].value }}
+                      <p-dropdown [options]="containers" 
+                                  formControlName="DestinationUnitId" 
+                                  pTooltip="Destination Unit" 
+                                  tooltipPosition="right"
+                                  [autoWidth]="false"></p-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          <!--</div> -->
+        </div>
+
+        <div class="col-md-2">
+          <button pButton class="pull-right" type="submit" [disabled]="!configForm.valid || configForm.controls['Methods'].length == 0" label="Submit"></button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /card-->
+
+  <div formArrayName="Methods">
+    <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
+      <div [formGroupName]="i">
+        <!--Methods : {{ method['controls']['AllowableAttributes']['controls'] }}-->
+        <app-attributes *ngIf="selectedMethod && selectedContainer && selectedMethod['id'] == i" 
+          [form-group-level-1]="method"
+          [container-selected-method]="container['Methods'][i]">
+        </app-attributes>
+
+        <!--<div formArrayName="AllowableAttributes">
+          <div *ngFor="let attribute of method['controls']['AllowableAttributes']['controls']; let j=index">
+            <div [formGroupName]="j">
+              Attribute: {{ attribute }}
+            </div>
+          </div>
+        </div> -->
+        
+      </div>
+    </div>
+  </div>
+
+
+  </form>
+</div>

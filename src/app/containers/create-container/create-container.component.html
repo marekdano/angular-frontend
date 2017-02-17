@@ -1,0 +1,91 @@
+
+<button type="button" pButton icon="fa-plus" (click)="showDialogToAdd()" [label]="label ? label : null"></button>
+
+<form [formGroup]="containerForm">
+  <p-dialog header="Create Containers" [(visible)]="displayDialog" [responsive]="true" [resizable]="false" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid">
+      <div class="ui-g-row">
+        <div class="ui-g-6 dialog-column">
+          <div class="form-group">
+            <label for="">Container</label>
+            <input pInputText formControlName="ContainerName" (ngModelChange)="onEnterChar($event)" placeholder="Required" autocomplete="off"/>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerName'].valid && containerForm.controls['ContainerName'].dirty">
+              <i class="fa fa-close"></i>
+                Container is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="plantAreaKey">Plant Area</label>
+            <p-dropdown [options]="plantAreas" formControlName="PlantAreaName" editable="editable" [autoWidth]="false" autocomplete="off"></p-dropdown>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['PlantAreaName'].valid && containerForm.controls['PlantAreaName'].dirty">
+              <i class="fa fa-close"></i>
+                Plant Area is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="maxQuantity">Max Quantity</label>
+            <p-spinner formControlName="MaxQuantity" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['MaxQuantity'].valid && containerForm.controls['MaxQuantity'].dirty">
+              <i class="fa fa-close"></i>
+                Max Quantity must be a positive number.
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-6 dialog-column">
+          <div class="form-group">
+            <label for="containerTypeKey">Container Type</label>
+            <p-dropdown [options]="containerTypes" formControlName="ContainerTypeName" editable="editable" [autoWidth]="false" autocomplete="off"></p-dropdown>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerTypeName'].valid && containerForm.controls['ContainerTypeName'].dirty">
+              <i class="fa fa-close"></i>
+                Container Type is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="defaultBatchName">Default Batch Name - Optional</label>
+            <input pInputText formControlName="DefaultBatchName" autocomplete="off"/>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['DefaultBatchName'].valid && containerForm.controls['DefaultBatchName'].dirty">
+              <i class="fa fa-close"></i>
+                Default Batch Name is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="containerNumber">Container Number</label>
+            <p-spinner formControlName="ContainerNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerNumber'].valid && containerForm.controls['ContainerNumber'].dirty">
+              <i class="fa fa-close"></i>
+                Container Number must be a positive number.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-g-row" *ngIf="displayExtraFields" >
+        <div class="ui-g-6">
+          <div class="form-group">
+            <label for="seedNumber">Seed Number</label>
+            <p-spinner formControlName="SeedNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['SeedNumber'].valid && containerForm.controls['SeedNumber'].dirty">
+              <i class="fa fa-close"></i>
+                Seed Number must be a positive number.
+            </div>
+          </div>
+        </div> 
+        <div class="ui-g-6">
+          <div class="form-group">
+            <label for="count">Count</label>
+            <p-spinner formControlName="CreateCount" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['Count'].valid && containerForm.controls['Count'].dirty">
+              <i class="fa fa-close"></i>
+                Count must be a positive number.
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+    <footer>
+      <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+        <button pButton type="submit" [disabled]="!containerForm.valid" label="Submit" (click)="onSubmitContainer(containerForm.value, $event)"></button>
+      </div>
+    </footer>
+  </p-dialog>
+</form>

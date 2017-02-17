@@ -1,0 +1,13 @@
+
+<h2 class="main-title">Methods</h2>
+
+<p-growl [value]="msgs" [sticky]="true" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
+
+<div class="table-wrapper">
+  <p-dataTable [value]="methods" selectionMode="single" [(selection)]="selectedMethod" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="12" [responsive]="true">
+    <header>Methods</header>
+    <p-column field="containerName" header="Container" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="methodName" header="Method Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="methodEnabled" header="Enabled" [filter]="true" [sortable]="true"></p-column>
+  </p-dataTable>
+</div>

@@ -1,0 +1,73 @@
+<div [formGroup]="configForm">
+  <div class="card">
+    <div class="card-block">
+      <div class="row">
+        <div class="col-md-6 right-border">
+          <div formGroupName="TimeFromSqlQuery">
+            <div class="form-group">
+              <p-dropdown [options]="queryTypes" 
+                        formControlName="QueryTypeId" 
+                        [style]="{'width':'100%'}" 
+                        [autoWidth]="false"
+                        pTooltip="Query Type" 
+                        tooltipPosition="left">
+              </p-dropdown>
+            </div>
+            <div class="form-group">
+              <h6 class="control-label" >Query</h6>
+              <textarea rows="5" pInputTextarea formControlName="Query"></textarea>
+            </div>         
+            <div class="form-group">
+              <h6 class="control-label">Query Parameters</h6>
+              <textarea rows="5" pInputTextarea formControlName="Parameters"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div formGroupName="TimeFromTagDefinition">
+            <div formGroupName="Tag">
+              <div class="form-group">
+                <p-dropdown [options]="dataSources" 
+                            formControlName="Source" 
+                            [style]="{'width':'100%'}" 
+                            editable="editable" 
+                            [autoWidth]="false"
+                            pTooltip="Data Source" 
+                            tooltipPosition="left"></p-dropdown>
+              </div>
+              <div class="form-group">
+                <input pInputText class="input-field" pTooltip="Tag Name" tooltipPosition="left" formControlName="Name" placeholder="Tag Name"/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <p-dropdown [options]="conditions" 
+                          formControlName="ConditionId" 
+                          [style]="{'width':'100%'}" 
+                          [autoWidth]="false"
+                          pTooltip="Condition" 
+                          tooltipPosition="left"></p-dropdown>
+            </div>
+
+            <div class="form-group">
+              <input pInputText class="input-field" pTooltip="Value" tooltipPosition="left"formControlName="Value" placeholder="Value"/>
+            </div>
+
+            <div class="form-group">
+              <input pInputText class="input-field" pTooltip="Optional Second Value" tooltipPosition="left" formControlName="OptionalSecondValue" placeholder="Optional Second Value"/>
+            </div>
+
+            <div class="form-group">
+              <input pInputText class="input-field" pTooltip="Offset in Seconds" tooltipPosition="left" formControlName="OffsetInSeconds" placeholder="Offset in Seconds"/>
+              <div class="ui-message ui-messages-error ui-corner-all" 
+                  *ngIf="!configForm.controls['TimeFromTagDefinition']['controls']['OffsetInSeconds'].valid && configForm.controls['TimeFromTagDefinition']['controls']['OffsetInSeconds'].dirty">
+                <i class="fa fa-close"></i>
+                  Offset in Seconds must be a number.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

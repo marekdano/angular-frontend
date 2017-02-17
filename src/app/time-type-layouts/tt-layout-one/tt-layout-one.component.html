@@ -1,0 +1,110 @@
+<!--<div [formGroup]="configForm">-->
+<div class="ui-layout">  
+  <div class="card">
+    <div class="card-block">
+      <div class="form-group">
+        <p-dropdown [options]="fileTypes" 
+                    pTooltip="File Type" 
+                    tooltipPosition="right" 
+                    [style]="{'width':'50%'}" 
+                    [autoWidth]="false">
+        </p-dropdown>
+      </div>
+      <div class="form-group">
+        <input pInputText pTooltip="File Path" 
+                class="file-input"
+                tooltipPosition="right" 
+                placeholder="File Path"/>
+                
+      </div>
+      <div class="form-group checkbox-bottom-line">
+        <p-checkbox label="Column Names on First Row" binary="true"></p-checkbox>
+      </div>
+
+      <div class="row vertical-align">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input pInputText pTooltip="Tab" tooltipPosition="right" class="index-input" placeholder="Tab"/>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <p-radioButton name="tab" value="Index" label="Index"></p-radioButton>
+          </div>
+          <div>
+            <p-radioButton name="tab" value="Tab Name" label="Tab Name"></p-radioButton>
+          </div>
+        </div>  
+      </div>
+      
+      <div class="row vertical-align">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input pInputText pTooltip="Column" tooltipPosition="right" class="index-input" placeholder="Column"/>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <p-radioButton name="column" value="Index" label="Index"></p-radioButton>
+          </div>
+          <div>
+            <p-radioButton name="column" value="Column Name" label="Column Name"></p-radioButton>
+          </div>
+        </div>
+      </div>
+
+      <div class="row vertical-align">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input pInputText pTooltip="Optional Time Column" tooltipPosition="right" class="index-input" placeholder="Optional Time Column"/>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <p-radioButton name="optionalTimeColumn" value="Index" label="Index"></p-radioButton>
+          </div>
+          <div>
+            <p-radioButton name="optionalTimeColumn" value="Column Name" label="Column Name"></p-radioButton>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group checkbox-bottom-line">
+        <p-checkbox label="Enable Row Filters" binary="true" [(ngModel)]="selectedRowFilters" (onChange)="onRowFiltersChange($event)"></p-checkbox>
+      </div>
+
+      <div *ngIf="selectedRowFilters">
+        <div class="row vertical-align none-lines">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input pInputText pTooltip="Filter Column" class="index-input" tooltipPosition="right" placeholder="Filter Column"/>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div>
+              <p-radioButton name="filterColumn" value="Index" label="Index"></p-radioButton>
+            </div>
+            <div>
+              <p-radioButton name="filterColumn" value="Column Name" label="Column Name"></p-radioButton>
+            </div>
+          </div>
+        </div>
+        <div class="form-group top-space">
+          <p-dropdown [options]="filterConditions" 
+                      pTooltip="File Type" 
+                      tooltipPosition="right" 
+                      [style]="{'width':'50%'}" 
+                      [autoWidth]="false">
+          </p-dropdown>
+        </div>
+        <div class="form-group">
+          <input pInputText pTooltip="Filter Value" 
+                  class="file-input"
+                  tooltipPosition="right" 
+                  placeholder="Filter Value"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--</div>-->

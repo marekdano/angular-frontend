@@ -1,0 +1,29 @@
+<button type="button" pButton icon="fa-plus" (click)="showDialogToAdd()"></button>
+
+<form [formGroup]="methodForm">
+  <p-dialog header="Create Method Configuration" [(visible)]="displayDialog" [responsive]="true" [resizable]="true" showEffect="fade" [modal]="true">
+    <div class="ui-grid ui-grid-responsive ui-fluid method-form">  
+      <div class="form-group">
+        <label for="">Method Type</label>
+        <p-dropdown [options]="methodTypes" formControlName="MethodTypeId" [autoWidth]="false"></p-dropdown>
+        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!methodForm.controls['MethodTypeId'].valid && methodForm.controls['MethodTypeId'].dirty">
+          <i class="fa fa-close"></i>
+            Method Type is required.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="methodName">Method Name</label>
+        <input pInputText formControlName="MethodName" placeholder="Required" autocomplete="off"/>
+        <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!methodForm.controls['MethodName'].valid && methodForm.controls['MethodName'].dirty">
+          <i class="fa fa-close"></i>
+            Method Name is required.
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+        <button pButton type="submit" [disabled]="!methodForm.valid" label="Save" (click)="onSubmitMethod(methodForm.value, $event)"></button>
+      </div>
+    </footer>
+  </p-dialog>
+</form>

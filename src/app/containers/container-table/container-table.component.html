@@ -1,0 +1,82 @@
+
+<h2 class="main-title">Containers</h2>
+
+<p-growl [value]="msgs" [sticky]="true" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
+
+<div class="table-wrapper">
+  <p-dataTable [value]="containers" selectionMode="single" [(selection)]="selectedContainer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="12" [responsive]="true">
+    <header>Containers</header>
+    <p-column field="PlantAreaName" header="Plant Area" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="ContainerTypeName" header="Container Type" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="ContainerName" header="Container" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="MaxQuantity" header="Max Quantity" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="DefaultBatchName" header="Default Batch Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="ContainerNumber" header="Container Number" [filter]="true" [sortable]="true"></p-column>
+
+    <footer>
+      <app-create-container label="{{label}}"></app-create-container>
+    </footer>
+  </p-dataTable>
+</div>
+
+<form [formGroup]="containerForm">
+<p-dialog header="Container Details" [(visible)]="displayDialog" [responsive]="true" [resizable]="false" showEffect="fade" [modal]="true">
+  <div class="ui-grid ui-grid-responsive ui-fluid" >
+    <div class="ui-grid-row">
+      <div class="ui-g-6 dialog-column">
+        <div class="form-group">
+          <label for="containerName">Container Name</label>
+          <input pInputText id="containerName" formControlName="ContainerName" autocomplete="off"/>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerName'].valid && containerForm.controls['ContainerName'].dirty">
+            <i class="fa fa-close"></i>
+              Container is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="plantAreaKey">Plant Area</label>
+          <input pInputText id="plantAreaKey" formControlName="PlantAreaName" autocomplete="off"/>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['PlantAreaName'].valid && containerForm.controls['PlantAreaName'].dirty">
+            <i class="fa fa-close"></i>
+              Plant Area is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="maxQuantity">Max Quantity</label>
+          <p-spinner id="maxQuantity" formControlName="MaxQuantity" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['MaxQuantity'].valid && containerForm.controls['MaxQuantity'].dirty">
+            <i class="fa fa-close"></i>
+              Max Quantity must be a positive number.
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-6 dialog-column">
+        <div class="form-group">
+          <label for="containerTypeKey">Container Type</label>
+          <input pInputText id="containerTypeKey" formControlName="ContainerTypeName" autocomplete="off"/>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerTypeName'].valid && containerForm.controls['ContainerTypeName'].dirty">
+            <i class="fa fa-close"></i>
+              Container Type is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="defaultBatchName">Default Batch Name</label>
+          <input pInputText id="defaultBatchName" formControlName="DefaultBatchName" autocomplete="off"/>
+        </div>
+        <div class="form-group">
+          <label for="containerNumber">Container Number</label>
+          <p-spinner id="containerNumber" formControlName="ContainerNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['ContainerNumber'].valid && containerForm.controls['ContainerNumber'].dirty">
+            <i class="fa fa-close"></i>
+              Container Number must be a positive number.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="onDelete()" label="Delete"></button>
+      <button type="button" pButton icon="fa-check" (click)="onEdit(containerForm.value)" [disabled]="!containerForm.valid" label="Update"></button>
+    </div>
+  </footer>
+</p-dialog>
