@@ -7,14 +7,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class QueryTypeService {
-  private queryTypeUrl = "/Lookup/QueryTypes";
+  private queryTypeUrl = "/WS/Lookup/QueryTypes";
+  private queryTypes: Observable<QueryType[]>;
 
   constructor(private http: Http) { }
 
   getAllQueryTypes(): Observable<QueryType[]> {
-    return this.http.get(this.queryTypeUrl)
-      .map((response: Response) => 
-        response.json()['QueryTypeDTOs'] as QueryType[])
-      .catch(handleError);
+    if(!this.queryTypes) {
+      this.queryTypes = this.http.get(this.queryTypeUrl)
+        .map((response: Response) => 
+          response.json()['QueryTypeDTOs'] as QueryType[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.queryTypes;
   }
 }

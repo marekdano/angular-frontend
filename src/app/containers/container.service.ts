@@ -5,11 +5,11 @@ import handleError from '../shared/handle-error';
 import { Observable } from 'rxjs/Rx'; 
 
 @Injectable()
-export class ContainerService {
-  //private containersUrl = 'http://crossorigin.me/http://iqsconfig.westeurope.cloudapp.azure.com/api/Containers/'; 
-  private containersUrl = "Container/Containers";
-  private containerUrl = "Container/Container";
-  private containerAndMethodsUrl = "Container/ContainerAndMethods";
+export class ContainerService { 
+  private containersUrl = "/WS/Container/Containers";
+  private containerUrl = "/WS/Container/Container";
+  private containerAndMethodsUrl = "/WS/Container/ContainerAndMethods";
+  private containerWithMethodsUrl = "/WS/Container/ContainerWithMethods";
   containers: Container[];
 
   constructor(private http: Http) { }
@@ -21,13 +21,6 @@ export class ContainerService {
         return response.json()['ContainerDTOs'] as Container[];
       }) 
       .catch(handleError);
-
-      // Promise approach:
-      // Promise<any[]>
-      // .toPromise()
-      // //.then(response => response.json().data as Container[])
-      // .then(response => response.json())
-      // .catch(this.handleError);
   }
 
   getContainer(id: number): Observable<Container> {
@@ -38,38 +31,45 @@ export class ContainerService {
         return response.json()['ContainerDTO'] as Container;
       })
       .catch(handleError);
-      // Promise approach: 
-      // .toPromise()
-      // .then(response => <Container[]>response.json())
-      // .catch(this.handleError);
   }
 
   saveContainer(container: Container): Observable<Response> {
     const url = `${this.containerUrl}`;
-    return this.http.post(url, JSON.stringify(container), { headers: this.getHeaders() })
+    const containerDTO = { ContainerDTO: container };
+    return this.http.post(url, JSON.stringify(containerDTO), { headers: this.getHeaders() })
       .map(response => response.json() || {})
       .catch(handleError);
   }
 
   updateContainer(container: Container): Observable<Response> {
-    const url = `${this.containersUrl}/${container.ContainerKey}`;
-    return this.http.put(url, JSON.stringify(container), { headers: this.getHeaders() })
+    const url = `${this.containerUrl}/${container.ContainerKey}`;
+    const containerDTO = { ContainerDTO: container };
+    return this.http.put(url, JSON.stringify(containerDTO), { headers: this.getHeaders() })
       .map(response => response.json().data || {})
       .catch(handleError);
   }
 
-  deleteContainer(container: Container): Observable<Response> {
-    const url = `${this.containersUrl}/${container.ContainerKey}`;
+  deleteContainer(id: string): Observable<Response> {
+    const url = `${this.containerUrl}/${id}`;
     return this.http.delete(url)
-      .map(response => response.json().data || {})
+      .map(response => response.json())
       .catch(handleError);
   }
 
   saveContainerAndMethods(container: Container): Observable<Response> {
     const url = `${this.containerAndMethodsUrl}`;
-    return this.http.post(url, JSON.stringify(container), { headers: this.getHeaders() })
+    const containerDTO = { ContainerDTO: container };
+    return this.http.post(url, JSON.stringify(containerDTO), { headers: this.getHeaders() })
       .map(response => response.json() || {})
       .catch(handleError);
+  }
+
+  saveContainerWithMethods(container: Container): Observable<Response> {
+    const url = `${this.containerWithMethodsUrl}`;
+    const containerDTO = { ContainerDTO: container };
+    return this.http.post(url, JSON.stringify(containerDTO), { headers: this.getHeaders() })
+      .map(response => response.json())
+      .catch(handleError)
   }
   
   // PRIVATE METHODS
@@ -80,6 +80,4 @@ export class ContainerService {
     headers.append('Content-Type', 'application/json');
     return headers;
   }
-
-  
 }

@@ -25,49 +25,169 @@
   </div>
 
   <div [ngSwitch]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']['controls']['CalculationTypeId'].value">
-    <ui-layout-one *ngSwitchCase="1" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="2" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="3" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-two *ngSwitchCase="4" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-two>  
-    <ui-layout-three *ngSwitchCase="5" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-three>
-    <ui-layout-three *ngSwitchCase="6" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-three>
-    <ui-layout-three *ngSwitchCase="7" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-three>
-    <ui-layout-four *ngSwitchCase="8" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-four>
-    <ui-layout-three *ngSwitchCase="9" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-three>
-    <ui-layout-five *ngSwitchCase="10" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-five>
-    <ui-layout-one *ngSwitchCase="11" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="12" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="13" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="14" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="15" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-three *ngSwitchCase="16" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-three>
-    <ui-layout-one *ngSwitchCase="17" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="18" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-six *ngSwitchCase="19" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-one *ngSwitchCase="20" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="21" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="22" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-eight *ngSwitchCase="23"></ui-layout-eight>
-    <ui-layout-one *ngSwitchCase="24" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-six *ngSwitchCase="25" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
+    <ui-layout-one *ngSwitchCase="1" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="2" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="3" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-two *ngSwitchCase="4" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-two>  
+    <ui-layout-three *ngSwitchCase="5" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-three>
+    <ui-layout-three *ngSwitchCase="6" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-three>
+    <ui-layout-three *ngSwitchCase="7" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-three>
+    <ui-layout-four *ngSwitchCase="8" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-four>
+    <ui-layout-three *ngSwitchCase="9" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-three>
+    <ui-layout-five *ngSwitchCase="10" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-five>
+    <ui-layout-one *ngSwitchCase="11" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="12" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="13" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="14" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="15" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-three *ngSwitchCase="16" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-three>
+    <ui-layout-one *ngSwitchCase="17" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="18" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-six *ngSwitchCase="19" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-one *ngSwitchCase="20" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="21" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="22" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-eight *ngSwitchCase="23" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-eight>
+    <ui-layout-one *ngSwitchCase="24" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-six *ngSwitchCase="25" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
     <!-- case 26 is not defined --> 
-    <ui-layout-six *ngSwitchCase="27" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-six *ngSwitchCase="28" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-seven *ngSwitchCase="29" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-seven>
-    <ui-layout-seven *ngSwitchCase="30" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-seven>
-    <ui-layout-six *ngSwitchCase="31" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-six *ngSwitchCase="32" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-six *ngSwitchCase="33" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-six *ngSwitchCase="34" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-six *ngSwitchCase="35" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-one *ngSwitchCase="36" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-one *ngSwitchCase="37" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-one>
-    <ui-layout-six *ngSwitchCase="38" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-seven *ngSwitchCase="39" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-seven>
-    <ui-layout-seven *ngSwitchCase="40" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-seven>
-    <ui-layout-six *ngSwitchCase="41" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-six>
-    <ui-layout-nine *ngSwitchCase="42" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-nine>
-    <ui-layout-nine *ngSwitchCase="43" [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-nine>
+    <ui-layout-six *ngSwitchCase="27" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-six *ngSwitchCase="28" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-seven *ngSwitchCase="29" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-seven>
+    <ui-layout-seven *ngSwitchCase="30" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-seven>
+    <ui-layout-six *ngSwitchCase="31" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-six *ngSwitchCase="32" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-six *ngSwitchCase="33" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-six *ngSwitchCase="34" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-six *ngSwitchCase="35" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-one *ngSwitchCase="36" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-one *ngSwitchCase="37" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-one>
+    <ui-layout-six *ngSwitchCase="38" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-seven *ngSwitchCase="39" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-seven>
+    <ui-layout-seven *ngSwitchCase="40" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-seven>
+    <ui-layout-six *ngSwitchCase="41" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"
+      [data-sources]="dataSources"
+      [tags]="tags"></ui-layout-six>
+    <ui-layout-nine *ngSwitchCase="42" 
+      [form-group-level-3]="configForm.controls['AttributeAndValue']['controls']['ValueConfig']"></ui-layout-nine>
     <div *ngSwitchDefault>
       <div class="alert alert-info" role="alert">
         Please select the correct Calculation Type.

@@ -7,14 +7,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class TimeUnitService {
-  private timeUnitUrl = '/Lookup/TimeUnits';
+  private timeUnitUrl = '/WS/Lookup/TimeUnits';
+  private timeUnits: Observable<TimeUnit[]>;
 
   constructor(private http: Http) { }
 
   getAllTimeUnits(): Observable<TimeUnit[]> {
-    return this.http.get(this.timeUnitUrl)
-      .map((response: Response) => 
-        response.json()['TimeUnitDTOs'] as TimeUnit[])
-      .catch(handleError);
+    if(!this.timeUnits) {
+      this.timeUnits = this.http.get(this.timeUnitUrl)
+        .map((response: Response) => 
+          response.json()['TimeUnitDTOs'] as TimeUnit[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.timeUnits;
   }
 }

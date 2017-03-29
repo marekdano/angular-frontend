@@ -1,12 +1,9 @@
 
 <h2 class="main-title">Configuration</h2>
 
-<p-growl [value]="msgs" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
-<p-growl [value]="successfulMsgs" sticky="false" life="3000"></p-growl>
+<p-growl [value]="msgs" *ngIf="isLoading && !errorMessage || errorMessage" sticky=true></p-growl>
+<p-growl [value]="successfulMsgs" life="5000"></p-growl>
 
-<!--<section *ngIf="errorMsg">
-  {{errorMsg}}
-</section>-->
 <div class="main-form">
   <form [formGroup]="configForm" novalidate (ngSubmit)="onSubmit(configForm.value)">
   <div class="card">
@@ -14,47 +11,68 @@
     <div class="card-block config-form">
       <div class="row">
         <div class="col-md-10">
-          <!--<div class="row">-->
-            <div class="col-md-4 vertical-box ">
-              <p-dropdown [options]="containers" formControlName="ContainerKey" (onChange)="onContainerChange($event.value)" filter="filter" [autoWidth]="false"></p-dropdown>
-              <app-create-container label={{label}} (errorMsg)="errorMsg($event)" (containerAdded)="getUpdatedContainers()"></app-create-container>
+          <div class="col-md-4 vertical-box ">
+            <p-dropdown [options]="containers" formControlName="ContainerKey" (onChange)="onContainerChange($event.value)" filter="filter" [autoWidth]="false"></p-dropdown>
+            <app-create-container label={{label}} (errorMsg)="errorMsg($event)" (containerAdded)="getUpdatedContainers($event)"></app-create-container>
+          </div>
+          <div formArrayName="Methods">
+            <div *ngIf="configForm.controls['Methods'].value.length == 0 && selectedContainer">
+              <div class="col-md-4 vertical-box">
+                <p-dropdown [options]="methods" [autoWidth]="false"></p-dropdown>
+                <app-create-method *ngIf="selectedContainer && !errorMessage" 
+                                   (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
+              </div>
             </div>
-            <div formArrayName="Methods">
-              <div *ngIf="configForm.controls['Methods'].value.length == 0 && selectedContainer">
-                <div class="col-md-3 vertical-box">
-                  <p-dropdown [options]="methods" [autoWidth]="false"></p-dropdown>
-                  <app-create-method *ngIf="selectedContainer && !errorMessage" (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
-                </div>
+            <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
+              <div [formGroupName]="i">
+                <div *ngIf="(configForm.controls['Methods']['controls']).length-1 == i && selectedContainer">
+                  
+                  <div class="col-md-4 vertical-box">
+                    <p-dropdown [options]="methods" (onChange)="onMethodChange($event.value)" 
+                                formControlName="MethodId" [autoWidth]="false"
+                                [class.dropdown-invalid]="configForm.controls['Methods'].status === 'INVALID'">
+                      <template let-methodItem pTemplate="item">
+                        <div *ngFor="let method of methods; let i=index"> 
+                          <div *ngIf="methodItem === method && i === 0">
+                            <div style="font-size:14px;margin-top:3px">
+                              {{methodItem.label}}
+                            </div>
+                          </div> 
+                          <div *ngIf="methodItem === method && i > 0">
+                            <div style="font-size:14px;margin-top:3px" 
+                                 [class.invalid]="configForm.controls['Methods']['controls'][i-1].status === 'INVALID'">
+                              {{methodItem.label}}
+                            </div>
+                          </div>
+                        </div>  
+                      </template>
+                    </p-dropdown>
+                    <app-create-method *ngIf="selectedContainer" [unique-methods-defined]="uniqueMethodsDefined"
+                                       (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
+                    
+                    <!--<app-delete-method *ngIf="selectedMethod"
+                                       (methodDeleted)="handleMethodDeleted($event)"></app-delete-method>-->
+
+                  </div>
               </div>
-              <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
-                <div [formGroupName]="i">
-                  <div *ngIf="(configForm.controls['Methods']['controls']).length-1 == i">
-                    <div class="col-md-3 vertical-box">
-                      <p-dropdown [options]="methods" (onChange)="onMethodChange($event.value)" formControlName="MethodId" [autoWidth]="false"></p-dropdown>
-                      <app-create-method *ngIf="selectedContainer" [unique-methods-defined]="uniqueMethodsDefined"
-                                      (methodAdded)="handleMethodAdded($event, configForm.controls['Methods']['controls'].length)"></app-create-method>
-                    </div>
-                </div>
-                </div>
               </div>
-              
-              <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
-                <div [formGroupName]="i">
-                  <div *ngIf="selectedMethod && destinationContainer && selectedMethod['id'] == i">
-                    <div class="col-md-3 vertical-box">
-                      DestinationUnitId: {{ method['controls']['DestinationUnitId'].value }}
-                      <p-dropdown [options]="containers" 
-                                  formControlName="DestinationUnitId" 
-                                  pTooltip="Destination Unit" 
-                                  tooltipPosition="right"
-                                  [autoWidth]="false"></p-dropdown>
-                    </div>
+            </div>
+            
+            <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
+              <div [formGroupName]="i">
+                <div *ngIf="selectedMethod && destinationContainer && selectedMethod['id'] == i">
+                  <div class="col-md-3 vertical-box">
+                    <p-dropdown [options]="containers" 
+                                formControlName="DestinationUnitId" 
+                                pTooltip="Destination Unit" 
+                                tooltipPosition="right"
+                                filter="filter"
+                                [autoWidth]="false"></p-dropdown>
                   </div>
                 </div>
               </div>
-              
             </div>
-          <!--</div> -->
+          </div>
         </div>
 
         <div class="col-md-2">
@@ -68,11 +86,11 @@
     <div *ngFor="let method of configForm.controls['Methods']['controls']; let i=index">
       <div [formGroupName]="i">
         <!--Methods : {{ method['controls']['AllowableAttributes']['controls'] }}-->
-        <app-attributes *ngIf="selectedMethod && selectedContainer && selectedMethod['id'] == i" 
+        <app-attributes *ngIf="selectedMethod && selectedContainer && selectedMethod['id'] == i"
           [form-group-level-1]="method"
-          [container-selected-method]="container['Methods'][i]">
+          [data-sources]="dataSources"
+          [tags]="tags">
         </app-attributes>
-
         <!--<div formArrayName="AllowableAttributes">
           <div *ngFor="let attribute of method['controls']['AllowableAttributes']['controls']; let j=index">
             <div [formGroupName]="j">
@@ -80,7 +98,6 @@
             </div>
           </div>
         </div> -->
-        
       </div>
     </div>
   </div>

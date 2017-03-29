@@ -8,14 +8,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class FileTypeService {
-  private fileTypeUrl = "/Lookup/FileTypes";
+  private fileTypeUrl = "/WS/Lookup/FileTypes";
+  private fileTypes: Observable<FileType[]>;
 
   constructor(private http: Http) { }
 
   getAllFileTypes(): Observable<FileType[]> {
-    return this.http.get(this.fileTypeUrl)
-      .map((response: Response) => 
-        response.json()['FileTypeDTOs'] as FileType[])
-      .catch(handleError);
+    if(!this.fileTypes) {
+      this.fileTypes = this.http.get(this.fileTypeUrl)
+        .map((response: Response) => 
+          response.json()['FileTypeDTOs'] as FileType[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.fileTypes;
   }
 }

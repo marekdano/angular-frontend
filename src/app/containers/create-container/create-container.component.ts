@@ -80,7 +80,7 @@ export class CreateContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("CreateContainer component was destroyed");
+    console.log("CreateContainer component was destroyed.");
     if(this.lookupPlantAreas$) {
       this.lookupPlantAreas$.unsubscribe();
     }
@@ -107,8 +107,8 @@ export class CreateContainerComponent implements OnInit, OnDestroy {
 
     this.savingContainer$ = this.containerService.saveContainer(value)
       .subscribe(
-        testData => {
-          this.containerAdded.emit();
+        containerResponse => {
+          this.containerAdded.emit(containerResponse);
         },
         error => {
           this.errorMessage = error;
@@ -125,12 +125,18 @@ export class CreateContainerComponent implements OnInit, OnDestroy {
   }
 
   validateInput(event: KeyboardEvent): void {
-    //console.log("Event: ", event);
     const pattern = /[0-9]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       // invalid character; prevent input
       event.preventDefault();
+    }
+
+    if(this.containerForm.contains("CreateCount")) {
+      if(this.containerForm.controls['CreateCount'].value === 50) {
+        // prevent not to type number higher than 50
+        event.preventDefault();
+      }
     }
   }
 
@@ -139,8 +145,8 @@ export class CreateContainerComponent implements OnInit, OnDestroy {
   onEnterChar(value: string): void {
     if(value && value.includes("#")) {
       this.displayExtraFields = true;
-      this.containerForm.addControl("SeedNumber", new FormControl(1, [Validators.required, Validators.pattern("[0-9]*")]));
-      this.containerForm.addControl("CreateCount", new FormControl(1, [Validators.required, Validators.pattern("[0-9]*")]));
+      this.containerForm.addControl("SeedNumber", new FormControl(1, [Validators.required, Validators.pattern("[0-9]*")] ));
+      this.containerForm.addControl("CreateCount", new FormControl(1, [Validators.required, Validators.pattern("[0-9]*")] ));
     } else {
       this.displayExtraFields = false;
       this.containerForm.removeControl("SeedNumber");

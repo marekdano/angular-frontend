@@ -7,16 +7,18 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class TagService {
-  private tagUrl = '/Lookup/Tags';
+  private tagUrl = '/WS/Lookup/Tags';
+  private tags: Observable<Tag[]>;
   
   constructor(private http: Http) { }
 
   getAllTags(): Observable<Tag[]> {
-    return this.http.get(this.tagUrl)
-      .map((response: Response) => 
-        response.json()["TagDTOs"] as Tag[])
-      .catch(handleError);
+    if(!this.tags) {
+      this.tags = this.http.get(this.tagUrl)
+        .map((response: Response) => 
+          response.json()["TagDTOs"] as Tag[])
+        .catch(handleError);
+    }
+    return this.tags;
   }
-  
-
 }

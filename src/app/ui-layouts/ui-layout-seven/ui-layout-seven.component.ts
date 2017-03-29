@@ -16,8 +16,6 @@ import { SelectItem, Message } from 'primeng/primeng';
 export class UiLayoutSevenComponent implements OnInit, OnDestroy {
   tagAliases: Object[] = [];
   timeTypes: SelectItem[] = [];
-  dataSources: SelectItem[] = [];
-  tags: SelectItem[] = [];
   selectedTimeTypeId: number;
   calculationTypeId: number;
   tagAliasForm: FormGroup;
@@ -25,21 +23,18 @@ export class UiLayoutSevenComponent implements OnInit, OnDestroy {
   errorMessage: string;
   msgs: Message[] = [];
 
-  lookupDataSources$: any;
   lookupTimeConfigTypes$: any;
-  lookupTags$: any;
 
   @Input('form-group-level-3') configForm: FormGroup;
+  @Input('data-sources') dataSources: SelectItem[];
+  @Input('tags') tags: SelectItem[];
 
   constructor(private fb: FormBuilder,
-              private timeConfigTypeService: TimeConfigTypeService,
-              private dataSourceNamesService: DataSourceNamesService,
-              private tagService: TagService) { }
+              private timeConfigTypeService: TimeConfigTypeService) { }
 
   ngOnInit() {
     console.log("UiLayoutSevenComponent was initialized.");
     this.calculationTypeId = this.configForm.controls['CalculationTypeId'].value;
-    this.timeTypes.push({ label: 'Select Time Type', value: null });
     this.tagAliases = this.getTagAliasesForTable();
 
     // define a form for Tag Alias  
@@ -52,39 +47,13 @@ export class UiLayoutSevenComponent implements OnInit, OnDestroy {
     this.lookupTimeConfigTypes$ = this.timeConfigTypeService.getAllTimeConfigTypes()
       .subscribe(
         timeTypes => {
-          timeTypes.forEach(type => {
-            this.timeTypes.push({ label: type['Name'], value: type['Id'] });
+          this.timeTypes = timeTypes.map((type):SelectItem => {
+            return { label: type['Name'], value: type['Id'] }
           });
-        },
-        error => {
-          this.errorMessage = error;
-          this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
-        }
-      );
-
-    this.lookupDataSources$ = this.dataSourceNamesService.getDataSourceNames()
-      .subscribe(
-        dataSourceNames => {
-          this.dataSources.push({ label: "Select or Type...", value: null });
-          dataSourceNames.forEach(source => {
-            this.dataSources.push({ label: source, value: source });
-          });
-        },
-        error => {
-          this.errorMessage = error;
-          this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
-        }
-      );
-
-    this.lookupTags$ = this.tagService.getAllTags()
-      .subscribe(
-        tags => {
-          this.tags.push({ label: "Select or Type...", value: null });
-          tags.forEach(tag => {
-            this.tags.push({ label: tag['Name'], value: tag['Name'] });
-          });
+          // remove first element which is "current time" 
+          this.timeTypes.shift();
+          // add it as a first element
+          this.timeTypes.unshift({ label: 'Select Time Type', value: null });
         },
         error => {
           this.errorMessage = error;
@@ -95,14 +64,11 @@ export class UiLayoutSevenComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("UiLayoutSeven component was destroyed");
+    console.log("UiLayoutSeven component was destroyed.");
     this.lookupTimeConfigTypes$.unsubscribe();
-    this.lookupDataSources$.unsubscribe(); 
-    this.lookupTags$.unsubscribe();
   }
 
   onSubmitTagAlias(newTagAlias: Object, event: any) {
-    console.log("New Tag Alias: ", newTagAlias);
     event.preventDefault();
     const tagAlias = this.fb.group({
       Id: [null],
@@ -111,7 +77,6 @@ export class UiLayoutSevenComponent implements OnInit, OnDestroy {
     });
     this.displayDialog = false;
     this.configForm.controls['Tag']['controls']['TagAliases'].push(tagAlias);
-    console.log("this.configForm.controls['Tag']['controls']['TagAliases'] : ", this.configForm.controls['Tag']['controls']['TagAliases']);
     this.tagAliases = this.getTagAliasesForTable();
     this.tagAliasForm.reset();
   }
@@ -132,9 +97,7 @@ export class UiLayoutSevenComponent implements OnInit, OnDestroy {
   }
 
   onTimeTypeChange(value: number, configForm: FormGroup, insideOfEndTimeConfig: boolean = false) {
-    console.log("TimeTypeID in onTimeTypeChange : ", value);
     this.selectedTimeTypeId = value;
-
     HelperMethodService.setTimeConfig(this, value, configForm, this.calculationTypeId, insideOfEndTimeConfig);
   }
 

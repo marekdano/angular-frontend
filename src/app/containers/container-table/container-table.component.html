@@ -1,11 +1,13 @@
 
 <h2 class="main-title">Containers</h2>
 
-<p-growl [value]="msgs" [sticky]="true" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
+<p-growl [value]="msgs" *ngIf="isLoading && !errorMessage || errorMessage" sticky=true></p-growl>
+<p-growl [value]="successfulMsgs" life="5000"></p-growl>
 
 <div class="table-wrapper">
-  <p-dataTable [value]="containers" selectionMode="single" [(selection)]="selectedContainer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="12" [responsive]="true">
+  <p-dataTable [value]="containers" selectionMode="single" [(selection)]="selectedContainer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" [responsive]="true">
     <header>Containers</header>
+    <p-column field="ContainerKey" header="Container Key" [filter]="true" [sortable]="true"></p-column>
     <p-column field="PlantAreaName" header="Plant Area" [filter]="true" [sortable]="true"></p-column>
     <p-column field="ContainerTypeName" header="Container Type" [filter]="true" [sortable]="true"></p-column>
     <p-column field="ContainerName" header="Container" [filter]="true" [sortable]="true"></p-column>
@@ -14,7 +16,7 @@
     <p-column field="ContainerNumber" header="Container Number" [filter]="true" [sortable]="true"></p-column>
 
     <footer>
-      <app-create-container label="{{label}}"></app-create-container>
+      <app-create-container label="{{label}}" (errorMsg)="errorMsg($event)" (containerAdded)="getUpdatedContainers($event)"></app-create-container>
     </footer>
   </p-dataTable>
 </div>
@@ -75,7 +77,7 @@
   </div>
   <footer>
     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-      <button type="button" pButton icon="fa-close" (click)="onDelete()" label="Delete"></button>
+      <button type="button" pButton icon="fa-close" (click)="onDelete(selectedContainer['ContainerKey'])" label="Delete"></button>
       <button type="button" pButton icon="fa-check" (click)="onEdit(containerForm.value)" [disabled]="!containerForm.valid" label="Update"></button>
     </div>
   </footer>

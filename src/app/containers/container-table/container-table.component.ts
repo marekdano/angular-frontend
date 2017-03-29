@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { Message } from 'primeng/primeng';
 import { ContainerService } from '../container.service';
+import { HelperMethodService } from '../../shared/helper-methods.service';
 import { Container } from '../container.interface';
 import { OrbisContainer } from '../orbis-container.class';
+import { Message } from 'primeng/primeng';
 
 @Component({
   selector: 'app-container-table',
@@ -19,11 +20,13 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
   errorMessage: string;
   isLoading: boolean = true;
   msgs: Message[] = [];
-  label:string;
+  successfulMsgs: Message[] = [];
+  label: string;
   displayDialog: boolean;
   lookupContainers$: any;
   lookupContainer$: any;
   updateContainer$: any;
+  deleteContainer$: any;
 
   constructor(private fb: FormBuilder,
               private containerService: ContainerService) { }
@@ -47,7 +50,7 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("ContainerTable component was destroyed");
+    console.log("ContainerTable component was destroyed.");
     if(this.lookupContainers$) {
       this.lookupContainers$.unsubscribe();
     }
@@ -59,16 +62,21 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
     if(this.updateContainer$) {
       this.updateContainer$.unsubscribe();
     }
+
+    if(this.updateContainer$) {
+      this.updateContainer$.unsubscribe();
+    }
   }
 
   getContainers() {
     this.lookupContainers$ = this.containerService.getAllContainers()
       .subscribe(
         containers => {
+          this.errorMessage = null;
           this.containers = containers;
         }, 
         error => {
-         this.errorMessage = error;
+          this.errorMessage = error;
           this.msgs = [];
           this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
         },
@@ -77,15 +85,11 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
       );
   }
 
-  onEdit(value) {
-    console.log("Save was hit");
-    console.log("Value of edited container", value);
-
+  onEdit(value) { 
     this.updateContainer$ = this.containerService.saveContainerAndMethods(value)
       .subscribe(
         data => {
           //this.containers.push(this.container);
-          console.log("Container was updated!");
           this.getContainers();
         },
         error => {
@@ -99,10 +103,30 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
     this.displayDialog = false;
   }
     
-  onDelete() {
-    console.log("Delete was hit");
+  onDelete(id) {
+    console.log("ID: ", id);
     this.container = null;
     this.displayDialog = false;
+    this.containerService.deleteContainer(id)
+      .subscribe(
+        response => {
+          const responseObject = response['Result'];
+          if(responseObject === null) {
+            this.successfulMsgs = [];
+            this.successfulMsgs.push({ severity: 'success', summary: 'Success', detail: "The container was deleted." });
+            this.containers.splice(this.findSelectedContainerIndex(), 1);
+          } else {
+            this.msgs = [];
+            this.errorMessage = responseObject["<ErrorMessage>k__BackingField"];
+            this.msgs.push({ severity: 'error', summary: 'Failed', detail: `${this.errorMessage}` });
+          }
+        },
+        error => {
+          this.errorMessage = error;
+          this.msgs = [];
+          this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
+        }
+      );
   }    
 
   onRowSelect(event) {
@@ -112,7 +136,6 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
       .subscribe(
         container => {
           this.container = container;
-          console.log("Selected Container: ", container);
           this.containerForm
             .reset({
               ContainerKey: this.container["ContainerKey"],
@@ -126,9 +149,9 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
             });
         },
         error => {
-         this.errorMessage = error;
+          this.errorMessage = error;
           this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
+          this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
         },
         /* onComplete */ 
         () => this.isLoading = false
@@ -142,6 +165,29 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
       // invalid character, prevent input
       event.preventDefault();
     }
+  }
+
+  // This action gets from Create Container Component when error
+  // is received from the server while attempting to create a new container
+  errorMsg(error) {
+    console.log("Error occured while saving the container: ", error);
+    this.msgs = [];
+    this.msgs.push({ severity: 'error', summary: 'Unavailable', detail: "There was problem to create container." });
+  }
+
+  // This function runs when a new container is created.
+  getUpdatedContainers(response: Object) {
+    console.log("Response data: ", response);
+    HelperMethodService.handleResponseMessages(this, response);
+
+    // get the list of updated containers
+    if(response['ValidationResultsDTO'] === null) {
+      this.getContainers();
+    }
+  }
+
+  findSelectedContainerIndex(): number {
+    return this.containers.indexOf(this.selectedContainer);
   }
 
 }

@@ -1,0 +1,69 @@
+
+<h2 class="main-title">Container Configuration Summary</h2>
+
+<p-growl [value]="msgs" *ngIf="isLoading && !errorMessage || errorMessage" sticky=true></p-growl>
+<p-growl [value]="successfulMsgs" life="5000"></p-growl>
+
+<form novalidate #form="ngForm" (ngSubmit)="onSubmit(form.value)">
+<div class="main-form">
+  <div class="card">
+    <h5 class="card-header">Unit</h5>
+    <div class="card-block config-form">
+      <div class="row">
+        <div class="col-md-3">
+          <p-dropdown [options]="containers" 
+                      (onChange)="onContainerChange($event.value)" 
+                      filter="filter" [autoWidth]="false"></p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <div *ngIf="container" class="vertical-box">
+            <button pButton type="button" icon="fa-clone" (click)="onClone()"></button>
+            <input *ngIf="cloning" 
+                   name="containerName"
+                   (keyup)="onEnterChar($event.target.value)"
+                   pInputText class="input-field"  
+                   placeholder="New Container Name"
+                   [(ngModel)]="containerName"
+                   autocomplete="off"/>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div *ngIf="displaySeedAndCountFields">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="pull-right">
+                  <label for="seedNumber">Seed Number</label>
+                  <p-spinner [(ngModel)]="seedNumber" name="seedNumber" (keypress)="validateInput($event, form)" [min]="0" size="8"></p-spinner>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="createCount">Count</label>
+                <p-spinner [(ngModel)]="createCount" name="createCount" (keypress)="validateInput($event, form)" [min]="0" [max]="50" size="8"></p-spinner>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <button pButton class="pull-right" type="submit" label="Submit" [disabled]="(!container && !cloning) || (cloning && !containerName)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<div class="table-wrapper">
+  <p-dataTable [value]="values" [editable]="true">
+    <header>Container with Methods</header>
+    <p-column field="MethodName" header="Method Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="AttributeName" header="Attribute Name" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="ValueConfig" header="Value Config" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="data1" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="data2" [filter]="true" [sortable]="true"></p-column>
+    <p-column field="Value" header="Value" [filter]="true" [sortable]="true" [editable]="!cloning" [styleClass]="ui-editor"></p-column>
+    <p-column field="ClonedValue" header="Cloned Value" *ngIf="cloning" [filter]="true" [sortable]="true" [editable]="true"></p-column>
+  </p-dataTable>
+</div>
+
+
+

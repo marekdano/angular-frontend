@@ -1,6 +1,6 @@
 {
-  "/": {
-    "target": "http://iqsconfig.westeurope.cloudapp.azure.com",
+  "/WS": {
+    "target": "http://10.0.0.82:60810",
     "changeOrigin": true,
     "secure": false,
     "logLevel": "debug"

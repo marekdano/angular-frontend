@@ -3,11 +3,31 @@
 
 <p-growl [value]="msgs" [sticky]="true" *ngIf="isLoading && !errorMessage || errorMessage"></p-growl>
 
+<!--<div [formGroup]="configForm">-->
+
 <div class="table-wrapper">
-  <p-dataTable [value]="methods" selectionMode="single" [(selection)]="selectedMethod" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="12" [responsive]="true">
+  <p-dataTable [value]="containers" [editable]="true">
     <header>Methods</header>
-    <p-column field="containerName" header="Container" [filter]="true" [sortable]="true"></p-column>
-    <p-column field="methodName" header="Method Name" [filter]="true" [sortable]="true"></p-column>
-    <p-column field="methodEnabled" header="Enabled" [filter]="true" [sortable]="true"></p-column>
+    
+    <p-column field="ContainerTypeName" header="Container Type"></p-column>
+    <p-column field="ContainerName" header="Container" [editable]="true">
+      <!--<template let-col let-containerName="rowData" let-ri="rowIndex" pTemplate="body">
+        <span>{{ ContainerName }}</span>
+      </template>-->
+      <!--<template pTemplate="editor">
+        <input type="text" pInputText formControlName="ContainerName"/>
+      </template>-->
+    </p-column>
+    <p-column field="Id" header="Id" [editable]="true">
+      <template let-col let-method="rowData" pTemplate="body">
+        <span>{{ method }}</span>
+      </template>
+    </p-column>
+    <p-column field="Methods" header="Methods" [editable]="true"></p-column>
+    <p-column field="MethodTypeId" header="MethodTypeId" [editable]="true"></p-column>
   </p-dataTable>
+
+  <button type="button" pButton icon="fa-close" (click)="onSubmit()" label="Submit"></button>
 </div>
+
+<!--</div>-->

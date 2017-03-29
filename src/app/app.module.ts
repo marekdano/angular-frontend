@@ -31,6 +31,7 @@ import { UiLayoutFourComponent } from './ui-layouts/ui-layout-four/ui-layout-fou
 import { UiLayoutSixComponent } from './ui-layouts/ui-layout-six/ui-layout-six.component';
 import { UiLayoutSevenComponent } from './ui-layouts/ui-layout-seven/ui-layout-seven.component';
 import { UiLayoutNineComponent } from './ui-layouts/ui-layout-nine/ui-layout-nine.component';
+import { CloningComponent } from './cloning/cloning.component';
 
 import { ContainerService } from './containers/container.service';
 import { MethodService } from './methods/method.service';
@@ -65,6 +66,8 @@ import { UiLayoutEightComponent } from './ui-layouts/ui-layout-eight/ui-layout-e
 import { TtLayoutOneComponent } from './time-type-layouts/tt-layout-one/tt-layout-one.component';
 import { TtLayoutTwoComponent } from './time-type-layouts/tt-layout-two/tt-layout-two.component';
 import { TtLayoutThreeComponent } from './time-type-layouts/tt-layout-three/tt-layout-three.component';
+import { PageNotFoundComponent } from './not-found/not-found.component';
+import { DeleteMethodComponent } from './methods/delete-method/delete-method.component';
 //import 'rxjs/add/operator/debounceTime';
 //import 'rxjs/add/operator/distinctUntilChanged';
 //import 'rxjs/add/operator/switchMap';
@@ -93,7 +96,10 @@ import { TtLayoutThreeComponent } from './time-type-layouts/tt-layout-three/tt-l
     UiLayoutEightComponent,
     TtLayoutOneComponent,
     TtLayoutTwoComponent,
-    TtLayoutThreeComponent
+    TtLayoutThreeComponent,
+    CloningComponent,
+    PageNotFoundComponent,
+    DeleteMethodComponent
   ],
   imports: [
     BrowserModule,

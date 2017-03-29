@@ -7,14 +7,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class CalculationTypeService {
-  private calculationTypeUrl = "/Lookup/CalculationTypes";
+  private calculationTypeUrl = "/WS/Lookup/CalculationTypes";
+  private calculationTypes: Observable<CalculationType[]>;
 
   constructor(private http: Http) { }
 
   getAllCalculationTypes(): Observable<CalculationType[]> {
-    return this.http.get(this.calculationTypeUrl)
-      .map((response: Response) => 
-        response.json()['CalculationTypeDTOs'] as CalculationType[])
-      .catch(handleError);
+    if(!this.calculationTypes) {
+      this.calculationTypes = this.http.get(this.calculationTypeUrl)
+        .map((response: Response) => 
+          response.json()['CalculationTypeDTOs'] as CalculationType[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.calculationTypes;
   }
 }

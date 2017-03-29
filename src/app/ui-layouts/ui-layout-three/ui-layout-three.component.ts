@@ -14,48 +14,34 @@ import { SelectItem, Message } from 'primeng/primeng';
 })
 export class UiLayoutThreeComponent implements OnInit, OnDestroy {
   timeTypes: SelectItem[] = [];
-  dataSources: SelectItem[] = [];
   selectedTimeTypeId: number;
   calculationTypeId: number;
   errorMessage: string;
   msgs: Message[] = [];
-  lookupDataSources$: any;
+  
   lookupTimeConfigTypes$: any;
 
   @Input('form-group-level-3') configForm: FormGroup;
+  @Input('data-sources') dataSources: SelectItem[];
+  @Input('tags') tags: SelectItem[];
 
   constructor(private fb: FormBuilder,
-              private timeConfigTypeService: TimeConfigTypeService,
-              private dataSourceNamesService: DataSourceNamesService) { }
+              private timeConfigTypeService: TimeConfigTypeService) { }
 
   ngOnInit() {
     console.log("UiLayoutThree Component was initialized.");
     this.calculationTypeId = this.configForm.controls['CalculationTypeId'].value;
-    this.timeTypes.push({ label: 'Select Time Type', value: null });
   
     this.lookupTimeConfigTypes$ = this.timeConfigTypeService.getAllTimeConfigTypes()
       .subscribe(
         timeTypes => {
-          //this.timeTypesList = timeTypes;
-          timeTypes.forEach(type => {
-            this.timeTypes.push({ label: type['Name'], value: type['Id'] });
+          this.timeTypes = timeTypes.map((type):SelectItem => {
+            return { label: type['Name'], value: type['Id'] }
           });
-        },
-        error => {
-          this.errorMessage = error;
-          this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
-        }
-      );
-
-    
-    this.lookupDataSources$ = this.dataSourceNamesService.getDataSourceNames()
-      .subscribe(
-        dataSourceNames => {
-          this.dataSources.push({ label: "Select or Type...", value: null });
-          dataSourceNames.forEach(source => {
-            this.dataSources.push({ label: source, value: source });
-          });
+          // remove first element which is "current time" 
+          this.timeTypes.shift();
+          // add it as a first element
+          this.timeTypes.unshift({ label: 'Select Time Type', value: null });
         },
         error => {
           this.errorMessage = error;
@@ -68,13 +54,10 @@ export class UiLayoutThreeComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     console.log("UiLayoutThree component was destroyed");
     this.lookupTimeConfigTypes$.unsubscribe();
-    this.lookupDataSources$.unsubscribe(); 
   }
 
   onTimeTypeChange(value: number, configForm: FormGroup, insideOfEndTimeConfig: boolean = false) {
-    console.log("TimeTypeID in onTimeTypeChange : ", value);
     this.selectedTimeTypeId = value;
-
     HelperMethodService.setTimeConfig(this, value, configForm, this.calculationTypeId, insideOfEndTimeConfig);
   }
 

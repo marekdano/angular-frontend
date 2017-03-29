@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, Input, } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
+import { SelectItem, Message } from 'primeng/primeng';
+
 @Component({
   selector: 'app-attributes',
   templateUrl: './attributes.component.html',
@@ -11,7 +13,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
   selectedAttributeId: any;
   
   @Input('form-group-level-1') configForm: FormGroup;
-  @Input('container-selected-method') containerSelectedMethod: Object;
+  @Input('data-sources') dataSources: SelectItem[];
+  @Input('tags') tags: SelectItem[];
   
   constructor() { }
 
@@ -27,5 +30,4 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.selectedAttribute = true;
     this.selectedAttributeId = index;
   }
-
 }

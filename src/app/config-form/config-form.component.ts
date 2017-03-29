@@ -3,16 +3,19 @@ import { FormBuilder, FormGroup, FormControl, FormArray, Validators } from '@ang
 
 import { SelectItem, Message } from 'primeng/primeng';
 import { Container } from '../containers/container.interface';
-import { uiLayout1, uiLayout2, uiLayout3, uiLayout4, uiLayout6, uiLayout7, uiLayout9 } from '../shared/layouts-enum'
-import { optionalValidataionLayout1, 
-         optionalValidataionLayout3,
-         optionalValidataionLayout6,
-         optionalValidataionLayout7 } from '../shared/validation-enum';
+import { uiLayout1, uiLayout2, uiLayout3, uiLayout4, uiLayout5, uiLayout6, uiLayout7, uiLayout8, uiLayout9 } from '../shared/layouts-enum'
+import { optionalValidationLayout1, 
+         optionalValidationLayout3,
+         optionalValidationLayout6,
+         optionalValidationLayout7,
+         optionalValidationLayout8 } from '../shared/validation-enum';
 import { HelperMethodService } from '../shared/helper-methods.service';
 import { ContainerService } from '../containers/container.service';
 import { MethodService } from '../methods/method.service';
 import { MethodTypeService } from '../method-type/method-type.service';
 import { CalculationTypeService } from '../calculation-type/calculation-type.service';
+import { DataSourceNamesService } from '../shared/data-source-names.service';
+import { TagService } from '../tag/tag.service';
 
 @Component({
   selector: 'app-config-form',
@@ -20,9 +23,11 @@ import { CalculationTypeService } from '../calculation-type/calculation-type.ser
   styleUrls: ['./config-form.component.scss']
 })
 export class ConfigFormComponent implements OnInit, OnDestroy {
-  configForm: FormGroup
+  configForm: FormGroup;
   containers: SelectItem[] = [];
   methods: SelectItem[] = [];
+  dataSources: SelectItem[] = [];
+  tags: SelectItem[] = [];
   methodChanged: boolean = false;
   label: string;
   errorMessage: string;
@@ -39,18 +44,23 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
   lookupContainer$: any;
   lookupMethodTypes$: any;
   lookupCalculationTypes$: any;
+  lookupDataSources$: any; 
+  lookupTags$: any;
   savingContainerAndMethods$: any;
 
-  selectedContainer: any;
+  selectedContainer: any = null;
   selectedMethod: string = null;
   destinationContainer: boolean = false;
   
   constructor(private fb: FormBuilder, 
               private containerService: ContainerService,
               private methodTypeService: MethodTypeService,
-              private calculationTypeService: CalculationTypeService) { }
+              private calculationTypeService: CalculationTypeService,
+              private dataSourceNamesService: DataSourceNamesService,
+              private tagService: TagService) { }
 
   ngOnInit() {  
+    console.log("ConfigForm component was initialized.");
     this.configForm = this.fb.group({
       ContainerKey: [null, Validators.required],
       ContainerName: [null, Validators.required],
@@ -60,16 +70,19 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
     });
 
     this.containers.push({label:'Select Container', value: null});
+    this.msgs = [];
+    this.msgs.push({ severity: 'info', summary: 'Retrieving data', detail: 'Loading data from server...' });
 
-    //console.log("Error message", this.errorMessage);
     this.getContainers();
     this.getCalculationTypes();
     this.getMethodTypes();
+    this.getDataSources();
+    this.getTags();
     this.label = null;
   }
 
   ngOnDestroy() {
-    console.log("ConfigForm component was destroyed");
+    console.log("ConfigForm component was destroyed.");
     if(this.lookupContainers$) {
       this.lookupContainers$.unsubscribe();
     }
@@ -89,19 +102,31 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
     if(this.savingContainerAndMethods$) {
       this.savingContainerAndMethods$.unsubscribe();
     }
-
+    
+    if(this.lookupDataSources$) {
+      this.lookupDataSources$.unsubscribe(); 
+    }
+    
+    if(this.lookupTags$) {
+      this.lookupTags$.unsubscribe();
+    }
   }
 
   onSubmit(configFormObj) {
     console.log("Form submitted");
-    console.log(JSON.stringify(configFormObj));
-    console.log(configFormObj);
-
     // remove from JSON object MethodId and ValueConfig if CalculationTypeId is null 
-    const methods = configFormObj['Methods'].map(method => {
+    // remove temporary fields
+    const methods = configFormObj['Methods'].map((method: Object) => {
+      let startTimeConfig, endTimeConfig;
+      if(method['MethodTypeId'] === 11) {
+        startTimeConfig = this.getStartTimeConfig(method)
+        endTimeConfig = this.getEndTimeConfig(method)
+      }
+
       return {
         Id: method['Id'],
         MethodTypeId: method['MethodTypeId'],
+        UnitId: method['UnitId'],
         DestinationUnitId: method['DestinationUnitId'],
         MethodName: method['MethodName'],
         AllowableAttributes: method['AllowableAttributes'].map(attribute => {
@@ -111,7 +136,38 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
               AttributeAndValue: null
             }
           } else {
-            return attribute
+            if('EndTimeConfig' in attribute['AttributeAndValue']['ValueConfig']) {
+              if(attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig'] !== null ) {
+                if(attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeConfigTypeId'] === null) {
+                  // EndTimeConfig will be null instead of being an Object if its property TimeConfigTypeId is null
+                  attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig'] = null
+                } else if(attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeFromFileDefinition'] !== null) {
+                  // delete Temporary fields
+                  delete attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeFromFileDefinition']['FileSource']['TempTabIndex'];
+                  delete attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeFromFileDefinition']['TempColumnsIndexes'];
+                  if(attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeFromFileDefinition']['FilterByColumn'] !== null) {
+                    delete attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig']['TimeFromFileDefinition']['FilterByColumn']['TempFilterColumnIndex'];
+                  }
+                }
+              }
+            } 
+            if('StartTimeConfig' in attribute['AttributeAndValue']['ValueConfig']) {
+              if(attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig']['TimeFromFileDefinition'] !== null) {
+                // delete Temporary fields
+                delete attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig']['TimeFromFileDefinition']['FileSource']['TempTabIndex'];
+                delete attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig']['TimeFromFileDefinition']['TempColumnsIndexes'];
+                if(attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig']['TimeFromFileDefinition']['FilterByColumn'] !== null) {
+                  delete attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig']['TimeFromFileDefinition']['FilterByColumn']['TempFilterColumnIndex'];
+                }
+              }
+            }
+            // define StartTimeConfig and EndTimeConfig when the calculationTypeId is 42
+            if(attribute['AttributeAndValue']['ValueConfig']['CalculationTypeId'] === 42) {
+              attribute['AttributeAndValue']['ValueConfig']['StartTimeConfig'] = startTimeConfig;
+              attribute['AttributeAndValue']['ValueConfig']['EndTimeConfig'] = endTimeConfig;              
+            } 
+          
+            return attribute;
           }
         })
       }
@@ -124,17 +180,17 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
       ContainerTypeName: configFormObj['ContainerTypeName'],
       Methods: methods
     }
-    console.log(JSON.stringify(objToBeSaved));
 
+    console.log("Form data sent: ", JSON.stringify({"ContainerDTO": objToBeSaved}));
+    this.isLoading = true;
+    this.msgs = [];
+    this.msgs.push({ severity: 'info', detail: 'Sending data...' });
     this.saveContainerAndMethods(objToBeSaved);
-    this.configForm.reset(); 
   }
 
-  onContainerChange(value: string): void {
-    console.log("Value in onContainerChange : ", value);
-
+  onContainerChange(id: number): void {
     // display message while data are loaded from the server
-    if(value != null) {
+    if(id != null) {
       this.isLoading = true;
       this.successfulMsgs = [];
       this.msgs = [];
@@ -143,9 +199,8 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
       this.isLoading = false;
     }
     
-    // value is ContainerKey of the selected container
-    this.selectedContainer = value;
-    console.log("Selected Container: ", this.selectedContainer);
+    // id is ContainerKey of the selected container
+    this.selectedContainer = id;
 
     if(this.selectedContainer) {
       this.uniqueMethodsDefined = [];
@@ -171,20 +226,16 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
 
   onMethodChange(valueOfMethod: string): void {
     if(valueOfMethod && this.selectedMethod != valueOfMethod) {
-      console.log("Value in methodChange function: ", valueOfMethod);
       this.selectedMethod = valueOfMethod;
     } else if(!valueOfMethod) {
-      console.log("SelectedMethod is set to null in onMethodChange");
       this.selectedMethod = null;
     }
 
     // Enable destination container when the selected method is the method of method type CreateIQSMovement 
     if(this.selectedMethod && this.selectedMethod['method']['MethodTypeId'] == 10) {
-      //console.log("this.configForm.controls['Methods']['controls'] : ", this.configForm.controls['Methods']['controls']);
       this.destinationContainer = true;
     } else {
       this.destinationContainer = false;
-      console.log("Selected Destination Container: ", this.destinationContainer);
     }
   }
 
@@ -192,6 +243,7 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
     // add method to the list
     const control = <FormArray>this.configForm.controls['Methods'];
     const validationOfDestinationUnitId = method['MethodTypeId'] === 10 ? Validators.required : null
+    // methodTypeId 8 and 12 are unique
     if(method['MethodTypeId'] === 8 || method['MethodTypeId'] === 12) {
       this.uniqueMethodsDefined.push(method['MethodTypeId']);
     }
@@ -199,6 +251,7 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
       Id: [method['Id'] || 0],
       MethodId: [null],
       MethodTypeId: [method['MethodTypeId']],
+      UnitId: [method['UnitId'] || this.selectedContainer['ContainerKey']],
       DestinationUnitId: [method['DestinationUnitId'] || null, validationOfDestinationUnitId],
       MethodName: [method['MethodName']],
       AllowableAttributes: this.fb.array([])
@@ -211,23 +264,22 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
     // Called when a container has method
     if(method['AllowableAttributes']) {
       method['AllowableAttributes'].forEach(obj => {
-        //console.log("OBJECT: ", obj);
         const attribute = this.fb.group({
           AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
           AttributeTypeName: [obj['AttributeTypeName'], Validators.required],
           AttributeTypeDescription: [obj['AttributeTypeDescription'] || null],
           IsRequired: [obj['IsRequired'], Validators.required],
+          CalculationTypesAllowed: this.initCalculationTypesAllowed(obj),
           AttributeAndValue: this.initAttributeAndValue(obj)
         })
         control.controls[methodIndex]['controls']['AllowableAttributes'].push(attribute);
       });
-      //console.log("JSON form data: ", JSON.stringify(this.configForm.value));
 
     // Called when a new method is created of the chosen container
     } else {
       const methodTypeWithAttributes = this.methodTypes.find(methodType => {
         return methodType['Id'] == method['MethodTypeId']
-      }) 
+      });
 
       if(methodTypeWithAttributes) {
         methodTypeWithAttributes['AttributesAvailable'].forEach(obj => {
@@ -237,15 +289,16 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
             AttributeTypeName: [obj['AttributeTypeName'], Validators.required],
             AttributeTypeDescription: [obj['AttributeTypeDescription'] || null],
             IsRequired: [obj['IsRequired'], Validators.required],
+            CalculationTypesAllowed: this.initCalculationTypesAllowed(obj),
             AttributeAndValue: this.fb.group({
-              ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
+              ValueConfigId: [0, Validators.required],
               AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
               ValueConfig: this.fb.group({
                 CalculationTypeId: [null, validationOfCalculationTypeId],
               })
             })
           });
-          //console.log("New Attribute: ", attribute);
+          
           control.controls[methodIndex]['controls']['AllowableAttributes'].push(attribute);
         });
       }
@@ -253,251 +306,204 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
   }
 
   initAttributeAndValue(obj: Object): FormGroup {
+    const validationOfCalculationTypeId = obj['IsRequired'] ? Validators.required : null;
+
     if(obj && obj['AttributeAndValue']) {
       const calculationTypeId = obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'];
-      const validationOfCalculationTypeId = obj['IsRequired'] ? Validators.required : null;
-
+    
       const calculation = HelperMethodService.findCalculationTypeById(this.calculationTypesList, calculationTypeId);
+      if(calculation && 'UiValidationIndicator' in calculation) {
+        // UI layout #1
+        if(calculation["UiValidationIndicator"] === uiLayout1) {
+          const optionalValidation = HelperMethodService.findIdInArr(optionalValidationLayout1, calculationTypeId) 
+                                      ? null 
+                                      : Validators.required
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
+              Tag: HelperMethodService.initTag(this, obj['AttributeAndValue']['ValueConfig']['Tag']),
+              MultiplyBy: [obj['AttributeAndValue']['ValueConfig']['MultiplyBy'], Validators.pattern("[0-9]*")]
+            })
+          });
+        } // UI layout #2 
+        else if(calculation["UiValidationIndicator"] === uiLayout2){
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue'], Validators.required]
+            })
+          });
+        } // UI layout #3
+        else if(calculation["UiValidationIndicator"] === uiLayout3) {
+          const optionalValidation = HelperMethodService.findIdInArr(optionalValidationLayout3, calculationTypeId) 
+                                      ? null 
+                                      : Validators.required
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation)
+            })
+          });
+        } // UI layout #4 
+        else if(calculation["UiValidationIndicator"] === uiLayout4) {
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig']),
+              Tag: HelperMethodService.initTag(this, obj['AttributeAndValue']['ValueConfig']['Tag']),
+              DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue'], Validators.required]
+            })
+          });
+        } // UI layout #5
+        else if(calculation["UiValidationIndicator"] === uiLayout5) {
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig']),
+              SqlQuery: HelperMethodService.initSqlQuery(this, obj['AttributeAndValue']['ValueConfig']['SqlQuery'])
+            })
+          })
+        } // UI layout #6 
+        else if(calculation["UiValidationIndicator"] === uiLayout6) {
+          const optionalValidation = HelperMethodService.findIdInArr(optionalValidationLayout6, calculationTypeId) 
+                                      ? null 
+                                      : Validators.required
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
+              Tag: HelperMethodService.initTag(this, obj['AttributeAndValue']['ValueConfig']['Tag']),
+              MultiplyBy: [obj['AttributeAndValue']['ValueConfig']['MultiplyBy'], Validators.pattern("[0-9]*")],
+              DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue'], Validators.required]
+            })
+          });
+        } // UI layout #7 
+        else if(calculation["UiValidationIndicator"] === uiLayout7) {
+          const optionalValidation = HelperMethodService.findIdInArr(optionalValidationLayout7, calculationTypeId) 
+                                      ? null 
+                                      : Validators.required
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
+              Tag: HelperMethodService.initTag(this, obj['AttributeAndValue']['ValueConfig']['Tag'])
+            })
+          });
+        } // UI layout #8
+        else if(calculation["UiValidationIndicator"] ===  uiLayout8) {
+          const optionalValidation = HelperMethodService.findIdInArr(optionalValidationLayout8, calculationTypeId) 
+                                      ? null 
+                                      : Validators.required
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              StartTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
+              EndTimeConfig: HelperMethodService.initStartOrEndTimeConfig(this, obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
+              ValueFromFileDefinition: HelperMethodService.initValueFromFileDefinition(this, obj['AttributeAndValue']['ValueConfig']['ValueFromFileDefinition'])
+            })
+          })
 
-      // UI layout #1
-      if(calculation["UiValidationIndicator"] === uiLayout1) {
-        const optionalValidation = HelperMethodService.findIdInArr(optionalValidataionLayout1, calculationTypeId) 
-                                    ? null 
-                                    : Validators.required
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            EndTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
-            Tag: this.initTag(obj['AttributeAndValue']['ValueConfig']['Tag']),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery']),
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-            MultiplyBy: [obj['AttributeAndValue']['ValueConfig']['MultiplyBy'], Validators.pattern("[0-9]*")]
-          })
-        });
-      } // UI layout #2 
-      else if(calculation["UiValidationIndicator"] === uiLayout2){
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery']),
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-            DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue'], Validators.required]
-          })
-        });
-      } // UI layout #3
-      else if(calculation["UiValidationIndicator"] === uiLayout3) {
-        const optionalValidation = HelperMethodService.findIdInArr(optionalValidataionLayout3, calculationTypeId) 
-                                    ? null 
-                                    : Validators.required
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            EndTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery'])
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-          })
-        });
-      } // UI layout #4 
-      else if(calculation["UiValidationIndicator"] === uiLayout4) {
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            EndTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['EndTimeConfig']),
-            Tag: this.initTag(obj['AttributeAndValue']['ValueConfig']['Tag']),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery']),
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-          })
-        });
-      } // UI layout #6 
-      else if(calculation["UiValidationIndicator"] === uiLayout6) {
-        const optionalValidation = HelperMethodService.findIdInArr(optionalValidataionLayout6, calculationTypeId) 
-                                    ? null 
-                                    : Validators.required
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            EndTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
-            Tag: this.initTag(obj['AttributeAndValue']['ValueConfig']['Tag']),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery']),
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-            MultiplyBy: [obj['AttributeAndValue']['ValueConfig']['MultiplyBy'], Validators.pattern("[0-9]*")],
-            DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue']]
-          })
-        });
-      } // UI layout #7 
-      else if(calculation["UiValidationIndicator"] === uiLayout7) {
-        const optionalValidation = HelperMethodService.findIdInArr(optionalValidataionLayout7, calculationTypeId) 
-                                    ? null 
-                                    : Validators.required
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            StartTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['StartTimeConfig']),
-            EndTimeConfig: this.initStartOrEndTimeConfig(obj['AttributeAndValue']['ValueConfig']['EndTimeConfig'], optionalValidation),
-            Tag: this.initTag(obj['AttributeAndValue']['ValueConfig']['Tag']),
-            SqlQuery: this.initSqlQuery(obj['AttributeAndValue']['ValueConfig']['SqlQuery'])
-            //ValueFromFileDefinition: this.initValueFromFileDefinition(...)
-          })
-        });
-      } // UI layout #9 
-      else if(calculation["UiValidationIndicator"] === uiLayout9) {
-        return this.fb.group({
-          ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
-          AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
-          ValueConfig: this.fb.group({
-            CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
-            // attribute fields
-          })
-        });
-      } else {
-        console.log("UI layout was not defined.");
+        } // UI layout #9 
+        else if(calculation["UiValidationIndicator"] === uiLayout9) {
+          return this.fb.group({
+            ValueConfigId: [obj['AttributeAndValue']['ValueConfigId'] || 0, Validators.required],
+            AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
+            ValueConfig: this.fb.group({
+              CalculationTypeId: [obj['AttributeAndValue']['ValueConfig']['CalculationTypeId'], validationOfCalculationTypeId],
+              DefaultValue: [obj['AttributeAndValue']['ValueConfig']['DefaultValue'], Validators.required]
+            })
+          });
+        } else {
+          console.log("UI layout was not defined.");
+        }
       }
     } else {
       return this.fb.group({
-        ValueConfigId: [obj['ValueConfigId'] || 0, Validators.required],
+        ValueConfigId: [0, Validators.required],
         AttributeTypeId: [obj['AttributeTypeId'], Validators.required],
         ValueConfig: this.fb.group({
-          CalculationTypeId: [null],
+          CalculationTypeId: [null, validationOfCalculationTypeId],
         })
       })
     }
   }
 
-  initStartOrEndTimeConfig(obj, validation: any = Validators.required): FormGroup {
-    if(obj !== null) {
-      return this.fb.group({
-        TimeConfigTypeId: [obj['TimeConfigTypeId'], validation],
-        PeriodicTimeDefinition: this.initPeriodicTimeDefinition(obj['PeriodicTimeDefinition'], validation),
-        TimeFromTagDefinition: this.initTimeFromTagDefinition(obj['TimeFromTagDefinition'], validation),
-        TimeFromSqlQuery: this.initSqlQuery(obj['TimeFromSqlQuery']),
-        //TimeFromFileDefinition: this.initTimeFromFileDefinition(...)
-      });
-    } 
-    else {
-      return this.fb.group({
-        TimeConfigTypeId: [null, validation],
-        PeriodicTimeDefinition: null,
-        TimeFromTagDefinition: null,
-        TimeFromSqlQuery: null,
-        //TimeFromFileDefinition: null
-      });
-    }
+
+  initCalculationTypesAllowed(obj: Object): FormArray {
+    return this.fb.array([...obj['CalculationTypesAllowed'] ]);
   }
 
-  initTag(obj: Object, validation: any = Validators.required ): FormGroup {
-    if(obj !== null) {
-      return this.fb.group({
-        Id: [obj['Id']],
-        Name: [obj['Name'], validation],
-        Source: [obj['Source'], validation],
-        TimeField: [obj['TimeField']],
-        ValueField: [obj['ValueField']],
-        Description: [obj['Description']],
-        TagAliases: this.initTagAliases(obj['TagAliases'], validation)
-      });
-    } 
+  // get StartTimeConfig in the method with the AttributeTypeId #6
+  getStartTimeConfig(method: Object) {
+    const startTime = method['AllowableAttributes'].find(attribute => {
+      return attribute['AttributeTypeId'] === 6;
+    });
+    return startTime ? startTime['AttributeAndValue']['ValueConfig']['StartTimeConfig'] : null;
   }
 
-  initTimeFromTagDefinition(obj: Object, validation: any = Validators.required): FormGroup {
-    if(obj !== null) {
-      return this.fb.group({
-        Id: [obj['Id']],
-        Tag: this.initTag(obj['Tag'], validation),
-        ConditionId: [obj['ConditionId'], validation],
-        Value: [obj['Value'], validation],
-        OffsetInSeconds: [obj['OffsetInSeconds'], Validators.pattern("[0-9]*")],
-        OptionalSecondValue: [obj['OptionalSecondValue']]
-      });
-    } else {
-      return null;
-    }
+  // get EndTimeConfig in the method with the AttributeTypeId #7
+  getEndTimeConfig(method: Object) {
+    const endTime = method['AllowableAttributes'].find(attribute => {
+      return attribute['AttributeTypeId'] === 7;
+    });
+    return endTime ? endTime['AttributeAndValue']['ValueConfig']['EndTimeConfig'] : null;
   }
 
-  initPeriodicTimeDefinition(obj: Object, validation: any = Validators.required): FormGroup {
-    if(obj != null) {
-      return this.fb.group({
-        FrequencyId: [obj['FrequencyId'], validation],
-        OffsetInSeconds: [obj['OffsetInSeconds'], Validators.pattern("[0-9]*")],
-        ResetTimeUnitId: [obj['ResetTimeUnitId']]
-      });
-    } else {
-      return null;
-    }
-  }
-
-  initTagAliases(obj: Object[], validation: any = Validators.required): FormArray {
-    let tagsArr = this.fb.array([]);
-    if(obj !== null) { 
-      obj.forEach(tag => {
-        //console.log("Tag in TagAliases: ", tag);
-        tagsArr.push(this.fb.group({
-          Id: [tag['Id']],
-          ValueFromTag: [tag['ValueFromTag'], validation],
-          Alias: [tag['Alias'], validation]
-        }))
-      })
-      return tagsArr;
-    } else {
-      return tagsArr;
-    }
-  }
-
-  initSqlQuery(obj: Object): FormGroup {
-    if(obj != null) {
-      return this.fb.group({
-        Id: [obj['Id']],
-        Query: [obj['Query'], Validators.required],
-        QueryTypeId: [obj['QueryTypeId'], Validators.required],
-        Parameters: [obj['Parameters']]
-      });
-    } else {
-      return null;
-    }
-  }
 
   handleMethodAdded(method, index): void {
-    console.log("Value in handleMethodAdded : ", method);
-   // console.log("ConfigFormWithMethod array passed : ", configFormWithMethods);
-    console.log("Last Index passed: ", index);
     const lastIndex = this.methods.length;
     this.methods.push({ label: method['MethodName'], value: {id: lastIndex-1, method} });
 
     this.addMethodWithAttributes(method);
     this.configForm.controls['Methods']['controls'][index]['controls']['MethodId'].patchValue({id: lastIndex-1, method})
-    console.log("method: ", this.configForm.controls['Methods']['controls'][index]['controls']['MethodId']);
     this.onMethodChange(this.methods[lastIndex].value);
+  }
+
+  handleMethodDeleted(): void {
+    console.log("Method should be deleted", this.selectedMethod);
   }
 
   // This action gets from Create Container Component when error
   // is received from the server while attempting to create a new container
   errorMsg(error) {
-    console.log("Error to save the container: ", error);
+    console.log("Error occured while saving the container: ", error);
     this.msgs = [];
-    this.msgs.push({ severity: 'error', summary: 'Unavailable', detail: "There was problem to save the container." });
+    this.msgs.push({ severity: 'error', summary: 'Unavailable', detail: "There was problem to create container." });
   }
 
   // This function runs when a new container is created.
-  getUpdatedContainers() {
-    this.msgs = [];
-    this.msgs.push({ severity: 'success', summary: 'Success', detail: "New Container was addded." });
-    this.getContainers();
+  getUpdatedContainers(response: Object) {
+    console.log("Response data: ", response);
+    HelperMethodService.handleResponseMessages(this, response);
+
+    // get the list of updated containers
+    if(response['ValidationResultsDTO'] === null) {
+      this.getContainers();
+    }
   }
 
   // The function for handling the list of containers
@@ -505,17 +511,22 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
     this.lookupContainers$ = this.containerService.getAllContainers()
       .subscribe(
         containers => {
+          this.selectedContainer = null;
+          this.selectedMethod = null;
+          this.methods = null;
           this.errorMessage = null;
-          containers.forEach(container => {
-            this.containers.push({ label: container['ContainerDisplayName'], value: container['ContainerKey'] });
-          })
+          this.containers = containers.map((container) => {
+            return { label: container['ContainerDisplayName'], value: container['ContainerKey'] } 
+          });
+          this.containers.unshift({label:'Select Container', value: null});
         },
         error => {
           this.errorMessage = error;
-          console.log("Error : ", this.errorMessage);
           this.msgs = [];
           this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
-        }
+        },
+        /* onComplete */ 
+        () => this.isLoading = false
       );
   }
 
@@ -527,10 +538,12 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
           this.container = container;
           let i = 0;
           this.selectedContainer = container;
-          this.selectedContainer['Methods'].forEach(method => {
-            this.addMethodWithAttributes(method);
-            this.methods.push({ label: method['MethodName'], value: {id: i++, method} })
-          });
+          if(this.selectedContainer['Methods'] !== null) {
+            this.selectedContainer['Methods'].forEach(method => {
+              this.addMethodWithAttributes(method);
+              this.methods.push({ label: method['MethodName'], value: {id: i++, method} })
+            });
+          } 
           this.configForm.patchValue({
             ContainerName: this.selectedContainer['ContainerName'], 
             PlantAreaName: this.selectedContainer['PlantAreaName'], 
@@ -575,22 +588,65 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
       );
   }
 
+  getDataSources(): void {
+    this.lookupDataSources$ = this.dataSourceNamesService.getDataSourceNames()
+      .subscribe(
+        dataSourceNames => {
+          this.dataSources = dataSourceNames.map((source) => {
+            return { label: source, value: source };
+          });
+          this.dataSources.unshift({ label: "Select or Type...", value: null });
+        },
+        error => {
+          this.errorMessage = error;
+          this.msgs = [];
+          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
+        }
+      );
+  }
+
+  getTags(): void {
+    this.lookupTags$ = this.tagService.getAllTags()
+      .subscribe(
+        tags => {
+          this.tags = tags.map((tag) => {
+            return { label: tag['Name'], value: tag['Name'] }
+          })
+          this.tags.unshift({ label: "Select or Type...", value: null });
+        },
+        error => {
+          this.errorMessage = error;
+          this.msgs = [];
+          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
+        }
+      );
+  }
+
   saveContainerAndMethods(objToBeSaved: Container): void {
     this.savingContainerAndMethods$ = this.containerService.saveContainerAndMethods(objToBeSaved)
       .subscribe(
-        data => {
-          console.log("Data after container and methods was saved: ", data);
-          this.msgs = [];
-          this.successfulMsgs = [];
-          this.successfulMsgs.push({ severity:'success', summary: 'Success', detail: "The container with methods was saved." });
-          this.getContainers();
-          setTimeout(() => this.successfulMsgs = [], 5000);
+        responseData => {
+          console.log("Response data: ", responseData);
+          HelperMethodService.handleResponseMessages(this, responseData, "The container with methods was saved.");
+          // get the list of updated containers
+          if(responseData['ValidationResultsDTO'] === null) {
+            this.selectedContainer = null;
+            this.selectedMethod = null;
+            this.methods = null;
+            this.getContainers();
+            this.getDataSources();
+            this.getTags();
+            // reset the form when json data are saved successfully
+            this.configForm.reset();
+          }
         },
         error => {
           this.errorMessage = error;
           this.msgs = [];
           this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
-        }
+        },
+        /* onComplete */ 
+        () => this.isLoading = false
       );
   }
 }

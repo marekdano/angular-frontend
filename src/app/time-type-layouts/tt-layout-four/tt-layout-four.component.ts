@@ -49,7 +49,7 @@ export class TtLayoutFourComponent implements OnInit, OnDestroy {
       .subscribe(
         frequencies => {
           frequencies.forEach(freq => {
-            this.frequencies.push({ label: freq['Description'], value: freq['PeriodValue'] });
+            this.frequencies.push({ label: freq['Description'], value: freq['Id'] });
           })
         },
         error => {

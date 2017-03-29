@@ -7,15 +7,21 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class AttributePropertyService {
-  private attributePropertiesUrl = "/Lookup/AttributeProperties";
+  private attributePropertiesUrl = "/WS/Lookup/AttributeProperties";
+  private attributeProperties: Observable<AttributeProperty[]>;
 
   constructor(private http: Http) { }
 
   getAllAttributeProperties(): Observable<AttributeProperty[]> {
-    return this.http.get(this.attributePropertiesUrl)
-      .map((response: Response) => 
-        response.json()['AttributePropertyDTOs'] as AttributeProperty[])
-      .catch(handleError);
+    if(!this.attributeProperties) {
+      this.attributeProperties = this.http.get(this.attributePropertiesUrl)
+        .map((response: Response) => 
+          response.json()['AttributePropertyDTOs'] as AttributeProperty[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.attributeProperties;
   }
 
 }

@@ -1,110 +1,166 @@
-<!--<div [formGroup]="configForm">-->
-<div class="ui-layout">  
-  <div class="card">
-    <div class="card-block">
-      <div class="form-group">
-        <p-dropdown [options]="fileTypes" 
-                    pTooltip="File Type" 
-                    tooltipPosition="right" 
-                    [style]="{'width':'50%'}" 
-                    [autoWidth]="false">
-        </p-dropdown>
-      </div>
-      <div class="form-group">
-        <input pInputText pTooltip="File Path" 
-                class="file-input"
-                tooltipPosition="right" 
-                placeholder="File Path"/>
-                
-      </div>
-      <div class="form-group checkbox-bottom-line">
-        <p-checkbox label="Column Names on First Row" binary="true"></p-checkbox>
-      </div>
-
-      <div class="row vertical-align">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input pInputText pTooltip="Tab" tooltipPosition="right" class="index-input" placeholder="Tab"/>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div>
-            <p-radioButton name="tab" value="Index" label="Index"></p-radioButton>
-          </div>
-          <div>
-            <p-radioButton name="tab" value="Tab Name" label="Tab Name"></p-radioButton>
-          </div>
-        </div>  
-      </div>
-      
-      <div class="row vertical-align">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input pInputText pTooltip="Column" tooltipPosition="right" class="index-input" placeholder="Column"/>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div>
-            <p-radioButton name="column" value="Index" label="Index"></p-radioButton>
-          </div>
-          <div>
-            <p-radioButton name="column" value="Column Name" label="Column Name"></p-radioButton>
-          </div>
-        </div>
-      </div>
-
-      <div class="row vertical-align">
-        <div class="col-md-6">
-          <div class="form-group">
-            <input pInputText pTooltip="Optional Time Column" tooltipPosition="right" class="index-input" placeholder="Optional Time Column"/>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div>
-            <p-radioButton name="optionalTimeColumn" value="Index" label="Index"></p-radioButton>
-          </div>
-          <div>
-            <p-radioButton name="optionalTimeColumn" value="Column Name" label="Column Name"></p-radioButton>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group checkbox-bottom-line">
-        <p-checkbox label="Enable Row Filters" binary="true" [(ngModel)]="selectedRowFilters" (onChange)="onRowFiltersChange($event)"></p-checkbox>
-      </div>
-
-      <div *ngIf="selectedRowFilters">
-        <div class="row vertical-align none-lines">
-          <div class="col-md-6">
+<div [formGroup]="configForm">
+  <div formGroupName="TimeFromFileDefinition">
+    <div class="ui-layout">  
+      <div class="card">
+        <div class="card-block">
+          <div formGroupName="FileSource">
             <div class="form-group">
-              <input pInputText pTooltip="Filter Column" class="index-input" tooltipPosition="right" placeholder="Filter Column"/>
+              <p-dropdown [options]="fileTypes" 
+                          formControlName="FileTypeId"
+                          pTooltip="File Type" 
+                          tooltipPosition="right" 
+                          [style]="{'width':'50%'}" 
+                          [autoWidth]="false">
+              </p-dropdown>
+            </div>
+            <div class="form-group">
+              <input pInputText pTooltip="File Path" 
+                     formControlName="FileFullName"
+                     class="file-input"
+                     tooltipPosition="right" 
+                     placeholder="File Path"
+                     autocomplete="off"/>
+            </div>
+            <div class="form-group checkbox-bottom-line">
+              <p-checkbox label="Column Names on First Row" 
+                          formControlName="ColumnNamesInFirstRow" 
+                          binary="true">
+              </p-checkbox>
+            </div>
+
+            <div class="row vertical-align">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input pInputText formControlName="Tab" 
+                         pTooltip="Tab" 
+                         tooltipPosition="right" 
+                         class="index-input" 
+                         placeholder="Tab"
+                         autocomplete="off"/>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div>
+                  <p-checkbox label="Index" 
+                              formControlName="IsTabIndex"
+                              (onChange)="onChangeIndexes('IsTabIndex', true)" 
+                              binary="true">
+                  </p-checkbox>
+                </div>
+                <div>
+                  <p-checkbox label="Tab Name"
+                              formControlName="TempTabIndex"
+                              (onChange)="onChangeIndexes('IsTabIndex', false)"
+                              binary="true">
+                  </p-checkbox>
+                </div>
+              </div>  
             </div>
           </div>
-          <div class="col-md-6">
-            <div>
-              <p-radioButton name="filterColumn" value="Index" label="Index"></p-radioButton>
+          
+          <div class="row vertical-align">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input pInputText pTooltip="Column"
+                       formControlName="DateColumn"
+                       tooltipPosition="right" 
+                       class="index-input" 
+                       placeholder="Column"
+                       autocomplete="off"/>
+              </div>
             </div>
-            <div>
-              <p-radioButton name="filterColumn" value="Column Name" label="Column Name"></p-radioButton>
+            <div class="col-md-6">
+              <div>
+                <p-checkbox label="Index" 
+                            formControlName="AreColumnsIndexes"
+                            (onChange)="onChangeIndexes('AreColumnsIndexes', true)" 
+                            binary="true">
+                </p-checkbox>
+              </div>
+              <div>
+                <p-checkbox label="Tab Name"
+                            formControlName="TempColumnsIndexes"
+                            (onChange)="onChangeIndexes('AreColumnsIndexes', false)"
+                            binary="true">
+                </p-checkbox>
+              </div>
+
             </div>
           </div>
-        </div>
-        <div class="form-group top-space">
-          <p-dropdown [options]="filterConditions" 
-                      pTooltip="File Type" 
-                      tooltipPosition="right" 
-                      [style]="{'width':'50%'}" 
-                      [autoWidth]="false">
-          </p-dropdown>
-        </div>
-        <div class="form-group">
-          <input pInputText pTooltip="Filter Value" 
-                  class="file-input"
-                  tooltipPosition="right" 
-                  placeholder="Filter Value"/>
+
+          <div class="row vertical-align">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input pInputText pTooltip="Optional Time Column"
+                       formControlName="TimeColumn"
+                       tooltipPosition="right" 
+                       class="index-input top-space" 
+                       placeholder="Optional Time Column"
+                       autocomplete="off"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group checkbox-bottom-line">
+            <p-checkbox label="Enable Row Filters" 
+                        formControlName="TempRowFilters"
+                        binary="true" 
+                        (onChange)="onRowFiltersChange($event)">
+            </p-checkbox>
+          </div>
+
+          <div *ngIf="selectedRowFilters">
+            <div formGroupName="FilterByColumn">
+              <div class="row vertical-align none-lines">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input pInputText pTooltip="Column"
+                           formControlName="FilterColumn"     
+                           class="index-input" 
+                           tooltipPosition="right" 
+                           placeholder="Filter Column"
+                           autocomplete="off"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div>
+                    <p-checkbox label="Index" 
+                                formControlName="IsFilterColumnTheIndex"
+                                (onChange)="onChangeIndexes('IsFilterColumnTheIndex', true)" 
+                                binary="true">
+                    </p-checkbox>
+                  </div>
+                  <div>
+                    <p-checkbox label="Tab Name"
+                                formControlName="TempFilterColumnIndex"
+                                (onChange)="onChangeIndexes('IsFilterColumnTheIndex', false)"
+                                binary="true">
+                    </p-checkbox>
+                  </div>
+
+                </div>
+              </div>
+              <div class="form-group top-space">
+                <p-dropdown [options]="filterConditions" 
+                            formControlName="ConditionId"
+                            pTooltip="File Type" 
+                            tooltipPosition="right" 
+                            [style]="{'width':'50%'}" 
+                            [autoWidth]="false">
+                </p-dropdown>
+              </div>
+              <div class="form-group">
+                <input pInputText pTooltip="Filter Value" 
+                        formControlName="FilterValue"
+                        class="file-input"
+                        tooltipPosition="right" 
+                        placeholder="Filter Value"
+                        autocomplete="off"/>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!--</div>-->

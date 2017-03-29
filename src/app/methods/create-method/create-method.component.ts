@@ -2,8 +2,6 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectItem, Message } from 'primeng/primeng';
 
-//import { CONTAINERS } from '../../shared/mock-containers';
-//import { METHODS } from '../../shared/mock-methods';
 import { HelperMethodService } from '../../shared/helper-methods.service';
 import { ContainerService } from '../../containers/container.service';
 import { MethodTypeService } from '../../method-type/method-type.service';
@@ -31,7 +29,7 @@ export class CreateMethodComponent implements OnInit, OnDestroy {
               private methodTypeService: MethodTypeService) { }
 
   ngOnInit() {
-    console.log("CreateMethod was initialized.");
+    console.log("CreateMethod component was initialized.");
     this.methodForm = this.fb.group({
       MethodTypeId: this.fb.control(null, [Validators.required]),
       MethodName: this.fb.control(null, [Validators.required])
@@ -70,9 +68,8 @@ export class CreateMethodComponent implements OnInit, OnDestroy {
   }
 
   onSubmitMethod(value: FormGroup, event: any) {
-    event.preventDefault();
-    //event.preventDefault ? event.preventDefault() : event.returnValue = false;
-    console.log(JSON.stringify(value));
+    event.preventDefault(); 
+    //event.preventDefault ? event.preventDefault() : event.returnValue = false; // set up for IE
     this.displayDialog = false;
     this.methodAdded.emit(value)
   }

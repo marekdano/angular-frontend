@@ -9,6 +9,10 @@
 input::-ms-clear {
   display: none;
 }
+//Set a placeholder color to grey in IE11 
+.input-field:-ms-input-placeholder {
+  color: #999 !important;
+}
 
 /******************************************
                Global Style
@@ -72,6 +76,10 @@ input::-ms-clear {
   margin-top: 1rem;
 }
 
+.invalid {
+  color: red; 
+}
+
 /******************************************
      Global Style for PrimeNG components
 *******************************************/
@@ -109,6 +117,11 @@ input::-ms-clear {
 .ui-button {
   margin-left: .4rem;
   padding: .1rem;
+  height: 1.76rem;
+
+  &.ui-spinner-button {
+    height: 50%;
+  }
 }
 
 .ui-button-icon-only .fa {
@@ -137,3 +150,14 @@ label, button {
 .active-attribute {
   background-color: lightyellow;
 }
+
+// input element in dataTable of the editable column 
+.ui-datatable td.ui-cell-editing input {
+  margin: 2px 2px 1px 1px;
+  padding-left: 2px;
+  background: #ffffff;
+  color: #555555;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+}
+

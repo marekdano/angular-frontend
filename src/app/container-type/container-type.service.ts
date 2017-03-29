@@ -7,14 +7,18 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class ContainerTypeService {
-  private containerTypeUrl = "/Lookup/ContainerTypes";
+  private containerTypeUrl = "/WS/Lookup/ContainerTypes";
+  private containerTypes: Observable<ContainerType[]>;
 
   constructor(private http: Http) { }
 
   getAllContainerTypes(): Observable<ContainerType[]> {
-    return this.http.get(this.containerTypeUrl)
-      .map((response: Response) => 
-        response.json()["ContainerTypeDTOs"] as ContainerType[])
-      .catch(handleError);
+    if(!this.containerTypes) {
+      this.containerTypes = this.http.get(this.containerTypeUrl)
+        .map((response: Response) => 
+          response.json()["ContainerTypeDTOs"] as ContainerType[])
+        .catch(handleError);
+    }
+    return this.containerTypes;
   }
 }

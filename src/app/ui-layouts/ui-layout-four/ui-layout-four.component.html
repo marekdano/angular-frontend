@@ -10,21 +10,31 @@
             <p-dropdown [options]="timeTypes" formControlName="TimeConfigTypeId" (onChange)="onTimeTypeChange($event.value, configForm.controls['StartTimeConfig'])" [autoWidth]="false" [style]="{'width':'60%'}"></p-dropdown>
             <div [ngSwitch]="configForm.controls['StartTimeConfig']['controls']['TimeConfigTypeId'].value">
               <tt-layout-one *ngSwitchCase="2" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-one> 
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-one> 
               <tt-layout-two *ngSwitchCase="3" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-two> 
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-two> 
               <tt-layout-three *ngSwitchCase="4" 
-                                [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-three> 
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-three> 
               <tt-layout-four *ngSwitchCase="5" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-four>
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-four>
               <tt-layout-five *ngSwitchCase="6" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <tt-layout-six *ngSwitchCase="7" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-six>
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-six>
               <tt-layout-five *ngSwitchCase="8" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <tt-layout-five *ngSwitchCase="9" 
-                              [form-group-level-4]="configForm.controls['StartTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['StartTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <div *ngSwitchDefault>
                 <div class="alert alert-info" role="alert">
                   Please select the correct Start Time Type.
@@ -44,21 +54,31 @@
             <p-dropdown [options]="timeTypes" formControlName="TimeConfigTypeId" (onChange)="onTimeTypeChange($event.value, configForm.controls['EndTimeConfig'])" [autoWidth]="false" [style]="{'width':'60%'}"></p-dropdown>
             <div [ngSwitch]="configForm.controls['EndTimeConfig']['controls']['TimeConfigTypeId'].value">
               <tt-layout-one *ngSwitchCase="2" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-one>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-one>
               <tt-layout-two *ngSwitchCase="3" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-two>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-two>
               <tt-layout-three *ngSwitchCase="4" 
-                                [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-three> 
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-three> 
               <tt-layout-four *ngSwitchCase="5" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-four>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-four>
               <tt-layout-five *ngSwitchCase="6" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <tt-layout-six *ngSwitchCase="7" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-six>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-six>
               <tt-layout-five *ngSwitchCase="8" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <tt-layout-five *ngSwitchCase="9" 
-                              [form-group-level-4]="configForm.controls['EndTimeConfig']"></tt-layout-five>
+                [form-group-level-4]="configForm.controls['EndTimeConfig']"
+                [data-sources]="dataSources"
+                [tags]="tags"></tt-layout-five>
               <div *ngSwitchDefault>
                 <div class="alert alert-info" role="alert">
                   Please select the correct End Time Type.
@@ -73,6 +93,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
+        <h6 class="card-header">Tag</h6>
         <div class="card-block">
           <div class="row">
             <div class="col-md-3">
@@ -100,15 +121,15 @@
                               autocomplete="off">
                   </p-dropdown>
                 </div>
-                <div class="form-group">
-                  <input pInputText pTooltip="Value" 
-                         tooltipPosition="right" 
-                         formControlName="ValueField" 
-                         class="input-field" 
-                         placeholder="Value"
-                         autocomplete="off"/>
-                </div> 
               </div>
+              <div class="form-group">
+                <input pInputText pTooltip="Value" 
+                        tooltipPosition="right" 
+                        formControlName="DefaultValue" 
+                        class="input-field" 
+                        placeholder="Value"
+                        autocomplete="off"/>
+              </div> 
             </div>
           </div>
         </div>

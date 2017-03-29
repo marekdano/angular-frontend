@@ -2,7 +2,7 @@
 <button type="button" pButton icon="fa-plus" (click)="showDialogToAdd()" [label]="label ? label : null"></button>
 
 <form [formGroup]="containerForm">
-  <p-dialog header="Create Containers" [(visible)]="displayDialog" [responsive]="true" [resizable]="false" showEffect="fade" [modal]="true">
+  <p-dialog header="Create Containers" [(visible)]="displayDialog" [responsive]="true" [resizable]="false" showEffect="fade" [modal]="true" width="650">
     <div class="ui-grid ui-grid-responsive ui-fluid">
       <div class="ui-g-row">
         <div class="ui-g-6 dialog-column">
@@ -61,23 +61,19 @@
 
       <div class="ui-g-row" *ngIf="displayExtraFields" >
         <div class="ui-g-6">
-          <div class="form-group">
-            <label for="seedNumber">Seed Number</label>
-            <p-spinner formControlName="SeedNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
-            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['SeedNumber'].valid && containerForm.controls['SeedNumber'].dirty">
-              <i class="fa fa-close"></i>
-                Seed Number must be a positive number.
-            </div>
+          <label for="seedNumber">Seed Number</label>
+          <p-spinner formControlName="SeedNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['SeedNumber'].valid && containerForm.controls['SeedNumber'].dirty">
+            <i class="fa fa-close"></i>
+              Seed Number must be a positive number.
           </div>
         </div> 
         <div class="ui-g-6">
-          <div class="form-group">
-            <label for="count">Count</label>
-            <p-spinner formControlName="CreateCount" (keypress)="validateInput($event)" [min]="0"></p-spinner>
-            <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['Count'].valid && containerForm.controls['Count'].dirty">
-              <i class="fa fa-close"></i>
-                Count must be a positive number.
-            </div>
+          <label for="count">Count</label>
+          <p-spinner formControlName="CreateCount" (keypress)="validateInput($event)" [min]="0" [max]="50"></p-spinner>
+          <div class="ui-message ui-messages-info ui-corner-all">
+            <i class="fa fa-info-circle"></i>
+              Count can be maximum 50.
           </div>
         </div> 
       </div>

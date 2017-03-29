@@ -7,14 +7,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class ConditionService {
-  private conditionUrl = '/Lookup/Conditions';
+  private conditionUrl = '/WS/Lookup/Conditions';
+  private conditions: Observable<Condition[]>;
 
   constructor(private http: Http) { }
 
   getAllConditions(): Observable<Condition[]> {
-    return this.http.get(this.conditionUrl)
-      .map((response: Response) =>
-        response.json()["ConditionDTOs"] as Condition[])
-      .catch(handleError);
+    if(!this.conditions) {
+      this.conditions = this.http.get(this.conditionUrl)
+        .map((response: Response) =>
+          response.json()["ConditionDTOs"] as Condition[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.conditions;
   }
 }

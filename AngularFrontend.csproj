@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E14304C2-E5FC-45A1-B8D8-E3EC944754A6}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AngularSample</RootNamespace>
+    <AssemblyName>AngularSample</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <Content Include="package.json" />
+    <Content Include="src\app\app.component.html" />
+    <Content Include="src\app\attributes\attributes.component.html" />
+    <Content Include="src\app\calculation-type\calculation-type.component.html" />
+    <Content Include="src\app\config-form\config-form.component.html" />
+    <Content Include="src\app\containers\container-table\container-table.component.html" />
+    <Content Include="src\app\containers\create-container\create-container.component.html" />
+    <Content Include="src\app\methods\create-method\create-method.component.html" />
+    <Content Include="src\app\methods\method-table\method-table.component.html" />
+    <Content Include="src\app\time-type-layouts\tt-layout-five\tt-layout-five.component.html" />
+    <Content Include="src\app\time-type-layouts\tt-layout-six\tt-layout-six.component.html" />
+    <Content Include="src\app\ui-layouts\ui-layout-one\ui-layout-one.component.html" />
+    <Content Include="src\assets\hourglass.gif" />
+    <Content Include="src\favicon.ico" />
+    <Content Include="src\index.html" />
+    <Content Include="wwwroot\3d3a53586bd78d1069ae4b89a3b9aa98.svg" />
+    <Content Include="wwwroot\567f57385ea3dde2c9aec797d07850d2.gif" />
+    <Content Include="wwwroot\912ec66d7572ff821749319396470bde.svg" />
+    <Content Include="wwwroot\assets\hourglass.gif" />
+    <Content Include="wwwroot\favicon.ico" />
+    <Content Include="wwwroot\index.html" />
+    <Content Include="wwwroot\inline.js" />
+    <Content Include="wwwroot\main.bundle.js" />
+    <Content Include="wwwroot\scripts.bundle.js" />
+    <Content Include="wwwroot\styles.bundle.js" />
+    <Content Include="src\app\app.component.scss" />
+    <Content Include="src\app\attributes\attributes.component.scss" />
+    <Content Include="src\app\calculation-type\calculation-type.component.scss" />
+    <Content Include="src\app\config-form\config-form.component.scss" />
+    <Content Include="src\app\containers\container-table\container-table.component.scss" />
+    <Content Include="src\app\containers\create-container\create-container.component.scss" />
+    <Content Include="src\app\methods\create-method\create-method.component.scss" />
+    <Content Include="src\app\methods\method-table\method-table.component.scss" />
+    <Content Include="src\app\time-type-layouts\tt-layout-five\tt-layout-five.component.scss" />
+    <Content Include="src\app\time-type-layouts\tt-layout-six\tt-layout-six.component.scss" />
+    <Content Include="src\app\ui-layouts\ui-layout-one\ui-layout-one.component.scss" />
+    <Content Include="src\assets\.gitkeep" />
+    <Content Include="src\styles.scss" />
+    <Content Include="src\tsconfig.json" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="wwwroot\16e1d930cf13fb7a956372044b6d02d0.woff" />
+    <Content Include="wwwroot\38861cba61c66739c1452c3a71e39852.ttf" />
+    <Content Include="wwwroot\674f50d287a8c48dc19ba404d20fe713.eot" />
+    <Content Include="wwwroot\7e367be02cd17a96d513ab74846bafb3.woff2" />
+    <Content Include="wwwroot\9f916e330c478bbfa2a0dd6614042046.eot" />
+    <Content Include="wwwroot\af7ae505a9eed503f8b8e6982036873e.woff2" />
+    <Content Include="wwwroot\b06871f281fee6b241d60582ae9369b9.ttf" />
+    <Content Include="wwwroot\fee66e712a8a08eef5805a46892932ad.woff" />
+    <Content Include="wwwroot\inline.map" />
+    <Content Include="wwwroot\main.map" />
+    <Content Include="wwwroot\scripts.map" />
+    <Content Include="wwwroot\styles.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\app.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\app\attributes\attribute.interface.ts" />
+    <TypeScriptCompile Include="src\app\attributes\attributes.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\attributes\attributes.component.ts" />
+    <TypeScriptCompile Include="src\app\calculation-type\calculation-type.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\calculation-type\calculation-type.component.ts" />
+    <TypeScriptCompile Include="src\app\calculation-type\calculation-type.interface.ts" />
+    <TypeScriptCompile Include="src\app\calculation-type\calculation-type.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\calculation-type\calculation-type.service.ts" />
+    <TypeScriptCompile Include="src\app\condition\condition.interface.ts" />
+    <TypeScriptCompile Include="src\app\condition\condition.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\condition\condition.service.ts" />
+    <TypeScriptCompile Include="src\app\config-form\config-form.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\config-form\config-form.component.ts" />
+    <TypeScriptCompile Include="src\app\containers\container-table\container-table.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\containers\container-table\container-table.component.ts" />
+    <TypeScriptCompile Include="src\app\containers\container.interface.ts" />
+    <TypeScriptCompile Include="src\app\containers\container.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\containers\container.service.ts" />
+    <TypeScriptCompile Include="src\app\containers\create-container\create-container.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\containers\create-container\create-container.component.ts" />
+    <TypeScriptCompile Include="src\app\containers\orbis-container.class.ts" />
+    <TypeScriptCompile Include="src\app\frequency\frequency.interface.ts" />
+    <TypeScriptCompile Include="src\app\frequency\frequency.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\frequency\frequency.service.ts" />
+    <TypeScriptCompile Include="src\app\index.ts" />
+    <TypeScriptCompile Include="src\app\method-type\method-type.interface.ts" />
+    <TypeScriptCompile Include="src\app\method-type\method-type.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\method-type\method-type.service.ts" />
+    <TypeScriptCompile Include="src\app\methods\create-method\create-method.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\methods\create-method\create-method.component.ts" />
+    <TypeScriptCompile Include="src\app\methods\method-table\method-table.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\methods\method-table\method-table.component.ts" />
+    <TypeScriptCompile Include="src\app\methods\method.interface.ts" />
+    <TypeScriptCompile Include="src\app\methods\method.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\methods\method.service.ts" />
+    <TypeScriptCompile Include="src\app\shared\container-type.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\shared\container-type.service.ts" />
+    <TypeScriptCompile Include="src\app\shared\mock-containers.ts" />
+    <TypeScriptCompile Include="src\app\shared\mock-methods.ts" />
+    <TypeScriptCompile Include="src\app\shared\mock-methodTypes.ts" />
+    <TypeScriptCompile Include="src\app\shared\plant-area.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\shared\plant-area.service.ts" />
+    <TypeScriptCompile Include="src\app\time-type-layouts\tt-layout-five\tt-layout-five.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\time-type-layouts\tt-layout-five\tt-layout-five.component.ts" />
+    <TypeScriptCompile Include="src\app\time-type-layouts\tt-layout-six\tt-layout-six.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\time-type-layouts\tt-layout-six\tt-layout-six.component.ts" />
+    <TypeScriptCompile Include="src\app\ui-layouts\ui-layout-one\ui-layout-one.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ui-layouts\ui-layout-one\ui-layout-one.component.ts" />
+    <TypeScriptCompile Include="src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="src\environments\environment.ts" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
+    <TypeScriptCompile Include="src\test.ts" />
+    <TypeScriptCompile Include="src\typings.d.ts" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51045</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51045/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target> -->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

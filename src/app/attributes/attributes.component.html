@@ -38,7 +38,10 @@
           <!--{{ attribute }}-->
           <div [formGroupName]="i">
             <app-calculation-type *ngIf="selectedAttribute && selectedAttributeId == i"
-              [form-group-level-2]="attribute"></app-calculation-type>
+              [form-group-level-2]="attribute"
+              [data-sources]="dataSources"
+              [tags]="tags">
+            </app-calculation-type>
           </div>
         </div>
       </div>

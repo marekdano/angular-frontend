@@ -17,8 +17,6 @@ export class TtLayoutFiveComponent implements OnInit, OnDestroy {
   conditions: SelectItem[] = [];
   timeUnits: SelectItem[] = [];
   frequencies: SelectItem[] = [];
-  dataSources: SelectItem[] = [];
-  tags: SelectItem[] = [];
   selectedCondition: number;
   errorMessage: string;
   msgs: Message[] = [];
@@ -26,16 +24,14 @@ export class TtLayoutFiveComponent implements OnInit, OnDestroy {
   lookupConditions$: any;
   lookupTimeUnits$: any;
   lookupFrequencies$: any;
-  lookupDataSources$: any;
-  lookupTags$: any;
 
   @Input('form-group-level-4') configForm: FormGroup;
+  @Input('data-sources') dataSources: SelectItem[];
+  @Input('tags') tags: SelectItem[];
 
   constructor(private conditionService: ConditionService,
               private timeUnitService: TimeUnitService,
-              private frequencyService: FrequencyService,
-              private dataSourceNamesService: DataSourceNamesService,
-              private tagService: TagService) { }
+              private frequencyService: FrequencyService) { }
 
   ngOnInit() {
     console.log("TtLayoutFiveComponent was initialized.");
@@ -76,7 +72,7 @@ export class TtLayoutFiveComponent implements OnInit, OnDestroy {
       .subscribe(
         frequencies => {
           frequencies.forEach(freq => {
-            this.frequencies.push({ label: freq['Description'], value: freq['PeriodValue'] });
+            this.frequencies.push({ label: freq['Description'], value: freq['Id'] });
           })
         },
         error => {
@@ -85,37 +81,6 @@ export class TtLayoutFiveComponent implements OnInit, OnDestroy {
           this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
         }
       );
-    
-    this.lookupDataSources$ = this.dataSourceNamesService.getDataSourceNames()
-      .subscribe(
-        dataSourceNames => {
-          this.dataSources.push({ label: "Select or Type...", value: null });
-          dataSourceNames.forEach(source => {
-            this.dataSources.push({ label: source, value: source });
-          });
-        },
-        error => {
-          this.errorMessage = error;
-          this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
-        }
-      );
-
-    this.lookupTags$ = this.tagService.getAllTags()
-      .subscribe(
-        tags => {
-          this.tags.push({ label: "Select or Type...", value: null });
-          tags.forEach(tag => {
-            this.tags.push({ label: tag['Name'], value: tag['Name'] });
-          });
-        },
-        error => {
-          this.errorMessage = error;
-          this.msgs = [];
-          this.msgs.push({severity:'error', summary: 'Unavailable', detail: this.errorMessage});
-        }
-      );
-
   }
 
   ngOnDestroy(): void {
@@ -123,12 +88,9 @@ export class TtLayoutFiveComponent implements OnInit, OnDestroy {
     this.lookupConditions$.unsubscribe();
     this.lookupTimeUnits$.unsubscribe(); 
     this.lookupFrequencies$.unsubscribe();
-    this.lookupDataSources$.unsubscribe();
-    this.lookupTags$.unsubscribe();
   }
 
   onConditionChanged(conditionId): void {
-    console.log("Selected Condition: ", conditionId);
     this.selectedCondition = conditionId;
   }
 

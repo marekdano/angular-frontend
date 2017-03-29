@@ -46,15 +46,46 @@ export interface Tag {
 // TypeConfig
 
 export interface SqlQuery {
-
+  Query: string,
+  QueryTypeId: number,
+  Id?: number,
+  Parameters: string
 }
 
 export interface ValueFromFileDefinition {
-
+  FileSource: FileSource,
+  ColumnValue: string,
+  IsColumnValueIndex: boolean,
+  Id?: number,
+  FilterByColumn?: FilterByColumn
 }
 
 export interface TimeFromFileDefinition {
+  FileSource: FileSource,
+  DateColumn: string,
+  AreColumnsIndexes: boolean,
+  Id?: number,
+  TimeColumn?: string,
+  OffsetInSeconds?: number,
+  FilterByColumn?: FilterByColumn 
+}
 
+export interface FileSource {
+  FileFullName: string,
+  FileTypeId: number,
+  ColumnNamesInFirstRow: boolean,
+  Id?: number,
+  Tab?: string,
+  IsTabIndex?: boolean
+}
+
+export interface FilterByColumn {
+  FilterColumn: string,
+  FilterValue: string,
+  IsFilterColumnTheIndex: boolean,
+  ConditionId: number,
+  Id?: number,
+  OptionalSecondFilterValue: string
 }
 
 export interface TimeConfig {

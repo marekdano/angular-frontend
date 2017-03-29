@@ -7,15 +7,21 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class MethodTypeService {
-  private methodTypesUrl = "/Lookup/MethodTypes";
+  private methodTypesUrl = "/WS/Lookup/MethodTypes";
+  private methodTypes: Observable<MethodType[]>;
 
   constructor(private http: Http) { }
 
   getAllMethodTypes(): Observable<MethodType[]> {
-    return this.http.get(this.methodTypesUrl)
-      // Observable<Container[]>
-      .map((response:Response) => 
-        response.json()['MethodTypeDTOs'] as MethodType[])
-      .catch(handleError);
+    if(!this.methodTypes) {
+      this.methodTypes = this.http.get(this.methodTypesUrl)
+        // Observable<Container[]>
+        .map((response:Response) => 
+          response.json()['MethodTypeDTOs'] as MethodType[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.methodTypes;
   }
 }

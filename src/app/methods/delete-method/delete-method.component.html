@@ -1,0 +1,14 @@
+
+<button type="button" (click)="showDialogToDelete()" pButton icon="fa-times" class="ui-button-danger"></button>
+
+<p-dialog header="Delete Method" [(visible)]="displayDialog" modal="modal" width="300" responsive="true" [resizable]="true" showEffect="fade">
+  <h5>Do you want to delete this method?</h5>
+  <footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="displayDialog=false" label="No"></button>
+      <button type="button" pButton icon="fa-check" (click)="onSubmitDeleteMethod($event)" label="Yes"></button>
+    </div>
+  </footer>
+</p-dialog>
+
+

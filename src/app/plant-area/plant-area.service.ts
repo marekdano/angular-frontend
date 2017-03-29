@@ -7,14 +7,18 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class PlantAreaService {
-  private plantAreaUrl = "/Lookup/PlantAreas";
+  private plantAreaUrl = "/WS/Lookup/PlantAreas";
+  private plantAreas: Observable<PlantArea[]>;
 
   constructor(private http: Http) { }
 
   getAllPlantAreas(): Observable<PlantArea[]> {
-    return this.http.get(this.plantAreaUrl)
-      .map((response: Response) => 
-        response.json()['PlantAreaDTOs'] as PlantArea[])
-      .catch(handleError);
+    if(!this.plantAreas) {
+      this.plantAreas = this.http.get(this.plantAreaUrl)
+        .map((response: Response) => 
+          response.json()['PlantAreaDTOs'] as PlantArea[])
+        .catch(handleError);
+    }
+    return this.plantAreas;
   }
 }

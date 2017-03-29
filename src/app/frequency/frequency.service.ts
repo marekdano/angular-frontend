@@ -7,14 +7,20 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class FrequencyService {
-  private frequencyUrl = '/Lookup/Frequencies';
+  private frequencyUrl = '/WS/Lookup/Frequencies';
+  private frequencies: Observable<Frequency[]>;
   
   constructor(private http: Http) { }
 
   getAllFrequencies(): Observable<Frequency[]> {
-    return this.http.get(this.frequencyUrl)
-      .map((response: Response) => 
-        response.json()["FrequencyDTOs"] as Frequency[])
-      .catch(handleError);
+    if(!this.frequencies) {
+      this.frequencies = this.http.get(this.frequencyUrl)
+        .map((response: Response) => 
+          response.json()["FrequencyDTOs"] as Frequency[])
+        .publishReplay(1)
+        .refCount()
+        .catch(handleError);
+    }
+    return this.frequencies;
   }
 }

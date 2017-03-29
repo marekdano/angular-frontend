@@ -40,7 +40,7 @@ export class UiLayoutNineComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log("UiLayoutNine component was destroyed");
+    console.log("UiLayoutNine component was destroyed.");
     this.lookupAttributeProperties$.unsubscribe(); 
   }
 

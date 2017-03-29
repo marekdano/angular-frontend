@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 import { TimeConfigTypeService } from '../../time-config-type/time-config-type.service';
 import { QueryTypeService } from '../../query-type/query-type.service';
@@ -22,21 +22,25 @@ export class UiLayoutFiveComponent implements OnInit {
   lookupQueryTypes$: any;
 
   @Input('form-group-level-3') configForm: FormGroup;
+  @Input('data-sources') dataSources: SelectItem[];
+  @Input('tags') tags: SelectItem[];
 
-  constructor(private timeConfigTypeService: TimeConfigTypeService,
+  constructor(private fb: FormBuilder,
+              private timeConfigTypeService: TimeConfigTypeService,
               private queryTypeService: QueryTypeService) { }
 
   ngOnInit() {
     console.log("UiLayoutFive Component was initialized.");
-    this.timeTypes.push({ label: 'Select Time Type', value: null });
     this.queryTypes.push({ label: 'Select Query Type', value: null });
 
     this.lookupTimeConfigTypes$ = this.timeConfigTypeService.getAllTimeConfigTypes()
       .subscribe(
         timeTypes => {
-          timeTypes.forEach(type => {
-            this.timeTypes.push({ label: type['Name'], value: type['Id'] });
+          this.timeTypes = timeTypes.map((type):SelectItem => {
+            return { label: type['Name'], value: type['Id'] }
           });
+          this.timeTypes.shift();
+          this.timeTypes.unshift({ label: 'Select Time Type', value: null });
         },
         error => {
           this.errorMessage = error;
@@ -67,9 +71,7 @@ export class UiLayoutFiveComponent implements OnInit {
   }
 
   onTimeTypeChange(value, configForm) {
-    console.log("TimeTypeID in onTimeTypeChange : ", value);
     this.selectedTimeTypeId = value;
-
     HelperMethodService.setTimeConfig(this, value, configForm);
   }
 

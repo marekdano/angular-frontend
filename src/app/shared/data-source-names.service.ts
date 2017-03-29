@@ -6,14 +6,18 @@ import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class DataSourceNamesService {
-  private dataSourceNamesUrl = "/Lookup/DataSourceNames";
+  private dataSourceNamesUrl = "/WS/Lookup/DataSourceNames";
+  private dataSources: Observable<string[]>;
 
   constructor(private http: Http) { }
 
   getDataSourceNames(): Observable<string[]> {
-    return this.http.get(this.dataSourceNamesUrl)
-      .map((response: Response) => 
-        response.json()['DataSourceNames'] as string[])
-      .catch(handleError);
+    if(!this.dataSources) {
+      this.dataSources = this.http.get(this.dataSourceNamesUrl)
+        .map((response: Response) => 
+          response.json()['DataSourceNames'] as string[])
+        .catch(handleError);
+    }
+    return this.dataSources;
   }
 }
