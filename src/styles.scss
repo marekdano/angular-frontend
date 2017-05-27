@@ -96,6 +96,12 @@ input::-ms-clear {
 }
 
 .ui-dropdown {
+  background: #ffffff;
+  
+  & .ui-dropdown-label {
+    width: 92%;
+  }
+
   .config-form & label.ui-dropdown-label {
     width: 12rem;
   }
@@ -112,6 +118,10 @@ input::-ms-clear {
       @extend %dropdown-icon;
     }
   }
+}
+
+.ui-growl {
+  min-width: 20em;
 }
 
 .ui-button {
@@ -159,5 +169,185 @@ label, button {
   color: #555555;
   border: 1px solid #d6d6d6;
   border-radius: 4px;
+}
+
+// .ui-spinner .fa {
+//   margin-left: -.45em;
+// }
+
+//**********************
+// Stefano L additional styles
+//**********************
+
+.card-header {
+  background: #1c315f;
+  color: white;
+  border-radius: 0px;
+  margin-left: -1px;
+  margin-right: -1px;
+}
+
+.ui-button{
+  height: 1.79rem;  
+}
+
+.ui-button, button.ui-button.ui-state-default, .ui-button.ui-state-default {
+  background: #0978bd;
+  border-color: #0978bd;
+}
+
+//button focus hover
+.ui-button, button.ui-button.ui-state-hover, .ui-button.ui-state-hover, button.ui-state-focus, .ui-button.ui-state-focus {
+  background: #26ACFF;
+  border-color: #26ACFF;
+}
+
+.ui-button, button.ui-button.ui-state-active, .ui-button.ui-state-active {
+  background: #1c315f;
+  border-color: #1c315f
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+  background: #0978bd;
+  //can't setup different colour for the content, as it's used into other items
+  //color: #EA745C;
+}
+
+//centering dropdown icon inside button
+.ui-dropdown .ui-dropdown-trigger .fa {
+  margin-top: 0;
+}
+
+//Error message top right (red)
+.ui-growl-item-container.ui-state-highlight.ui-growl-message-error {
+  background: #EA745C;
+  border-color: #EA745C;
+}
+
+.ui-growl-item-container.ui-state-highlight.ui-growl-message-success {
+  background: #09bd0f;
+  border-color: #09bd0f;
+}
+
+//Error message in form
+.ui-message .ui-messages-error{
+  background: #EA745C;
+  border-color: #EA745C;
+}
+
+.ui-fluid .ui-spinner .ui-spinner-button .fa {
+  color: #ffffff;
+  left: 0.5em;
+}
+
+//caret up/down arrows for the spinner. "color" is probably overwritten by .ui-spinner .fa below, but I also needed to change the "left" property
+.ui-spinner-button .ui-spinner-up .ui-corner-tr .ui-button .ui-widget { 
+  .ui-state-default .ui-button-text-only{
+    color: #ffffff;
+    left: 0.5em;
+  } 
+  .ui-state-hover .ui-button-text-only{
+    color: #ffffff;
+    left: 0.5em;
+  }
+  .ui-state-active .ui-button-text-only{
+    color: #ffffff;
+    left: 0.5em;
+  }
+}
+
+.ui-spinner .fa{
+  color: #ffffff;
+}
+
+.ui-spinner .fa:hover{
+  color: #ffffff;
+}
+
+.ui-spinner .fa:active{
+  color: #ffffff;
+}
+
+.ui-spinner .fa:focus{
+  color: #ffffff;
+}
+
+.ui-dialog{
+  border: transparent;
+}
+
+.ui-dialog.ui-widget .ui-dialog-titlebar{
+  background: #1c315f;
+  border-color: #1c315f;
+  color: #ffffff;
+}
+
+.ui-dialog .ui-dialog-titlebar-close{
+  color: #ffffff;
+}
+
+.ui-widget-header {
+  background: #ebedf0;
+}
+
+.ui-datatable th.ui-state-active {
+   background: #1c315f;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active{
+  background: #1c315f;
+  border-color: #1c315f;
+}
+
+.bg-faded {
+  background: #1c315f;
+  border-radius: 0px;
+}
+
+.navbar-light .navbar-nav .nav-link{
+  color: #ffffff;
+}
+
+.navbar-light .navbar-nav .active>.nav-link{
+  color: #26ACFF;
+}
+
+.navbar-light .navbar-nav .active>.nav-link:hover{
+  color: #72C9FF;
+}
+
+.navbar-light .navbar-nav .active>.nav-link:focus{
+  color: #26ACFF;
+}
+
+.navbar-light .navbar-nav .nav-link:hover{
+  color: #72C9FF;
+}
+
+.navbar-light .navbar-nav .nav-link:focus{
+  color: #ffffff;
+}
+.navbar-light .navbar-nav .nav-link:active{
+  color: #26ACFF;
+}
+
+.navbar-light .navbar-brand, .navbar-light .navbar-toggler {
+  color: #ffffff;
+  margin-top: -2px;
+}
+
+.navbar-light .navbar-brand, .navbar-light .navbar-toggler:active {
+  color: #ffffff;
+  margin-top: -2px;
+}
+
+.navbar-light .navbar-brand:focus, .navbar-light .navbar-brand:hover, .navbar-light .navbar-toggler:focus, .navbar-light .navbar-toggler:hover {
+  color: #ffffff;
+  margin-top: -2px;
+}
+
+.navbar-light .navbar-brand:focus, .navbar-light .navbar-brand:hover, .navbar-light .navbar-toggler:focus, .navbar-light .navbar-toggler:hover {
+  color: #ffffff;
+  margin-top: -2px;
 }
 

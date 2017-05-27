@@ -54,6 +54,7 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
   
   constructor(private fb: FormBuilder, 
               private containerService: ContainerService,
+              private methodService: MethodService,
               private methodTypeService: MethodTypeService,
               private calculationTypeService: CalculationTypeService,
               private dataSourceNamesService: DataSourceNamesService,
@@ -129,6 +130,8 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
         UnitId: method['UnitId'],
         DestinationUnitId: method['DestinationUnitId'],
         MethodName: method['MethodName'],
+        MethodEnabled: method['MethodEnabled'],
+        LastExecutionTime: method['LastExecutionTime'],
         AllowableAttributes: method['AllowableAttributes'].map(attribute => {
           if(attribute['AttributeAndValue']['ValueConfig']['CalculationTypeId'] === null) {
             return {
@@ -254,6 +257,8 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
       UnitId: [method['UnitId'] || this.selectedContainer['ContainerKey']],
       DestinationUnitId: [method['DestinationUnitId'] || null, validationOfDestinationUnitId],
       MethodName: [method['MethodName']],
+      MethodEnabled: [method['MethodEnabled']],
+      LastExecutionTime: [method['LastExecutionTime'] || null],
       AllowableAttributes: this.fb.array([])
     });   
     control.push(newMethod);
@@ -649,4 +654,27 @@ export class ConfigFormComponent implements OnInit, OnDestroy {
         () => this.isLoading = false
       );
   }
+
+  // deleteContainerMethod(id) {
+  //   this.deleteContainerMethod$ = this.methodService.deleteMethod(id)
+  //     .subscribe(
+  //       response => {
+  //         const responseObject = response['Result'];
+  //         if(responseObject === null) {
+  //           this.successfulMsgs = [];
+  //           this.successfulMsgs.push({ severity: 'success', summary: 'Success', detail: "The method was deleted." });
+  //           this.getContainer(this.container['ContainerKey']);
+  //         } else {
+  //           this.msgs = [];
+  //           this.errorMessage = responseObject["ErrorMessage"];
+  //           this.msgs.push({ severity: 'error', summary: 'Failed', detail: `${this.errorMessage}` });
+  //         }
+  //       },
+  //       error => {
+  //         this.errorMessage = error;
+  //         this.msgs = [];
+  //         this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
+  //       }
+  //     );
+  // }
 }

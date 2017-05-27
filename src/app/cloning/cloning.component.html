@@ -10,18 +10,16 @@
     <h5 class="card-header">Unit</h5>
     <div class="card-block config-form">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-6 vertical-box">
           <p-dropdown [options]="containers" 
                       (onChange)="onContainerChange($event.value)" 
                       filter="filter" [autoWidth]="false"></p-dropdown>
-        </div>
-        <div class="col-md-3">
-          <div *ngIf="container" class="vertical-box">
+          <div *ngIf="container">
             <button pButton type="button" icon="fa-clone" (click)="onClone()"></button>
             <input *ngIf="cloning" 
                    name="containerName"
                    (keyup)="onEnterChar($event.target.value)"
-                   pInputText class="input-field"  
+                   pInputText class="input-field input-new-container"  
                    placeholder="New Container Name"
                    [(ngModel)]="containerName"
                    autocomplete="off"/>

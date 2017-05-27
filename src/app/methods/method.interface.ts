@@ -5,6 +5,8 @@ export interface Method {
   MethodTypeId: number,
   MethodName: string,
   DestinationUnitId: number, 
+  MethodEnabled: boolean,
+  LastExecutionTime?: string,
   UnitId?: number,
   AllowableAttributes?: MethodTypeAttribute[]
 }

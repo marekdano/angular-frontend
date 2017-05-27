@@ -39,7 +39,6 @@ export class UiLayoutFiveComponent implements OnInit {
           this.timeTypes = timeTypes.map((type):SelectItem => {
             return { label: type['Name'], value: type['Id'] }
           });
-          this.timeTypes.shift();
           this.timeTypes.unshift({ label: 'Select Time Type', value: null });
         },
         error => {

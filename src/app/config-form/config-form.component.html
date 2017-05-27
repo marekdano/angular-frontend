@@ -11,7 +11,7 @@
     <div class="card-block config-form">
       <div class="row">
         <div class="col-md-10">
-          <div class="col-md-4 vertical-box ">
+          <div class="col-md-4 vertical-box">
             <p-dropdown [options]="containers" formControlName="ContainerKey" (onChange)="onContainerChange($event.value)" filter="filter" [autoWidth]="false"></p-dropdown>
             <app-create-container label={{label}} (errorMsg)="errorMsg($event)" (containerAdded)="getUpdatedContainers($event)"></app-create-container>
           </div>

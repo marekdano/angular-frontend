@@ -86,17 +86,22 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
   }
 
   onEdit(value) { 
-    this.updateContainer$ = this.containerService.saveContainerAndMethods(value)
+    this.updateContainer$ = this.containerService.updateContainer(value)
       .subscribe(
-        data => {
-          //this.containers.push(this.container);
-          this.getContainers();
+        response => {
+          console.log("Response from Update request: ", response);
+          HelperMethodService.handleResponseMessages(this, response, "The container was updated.");
+          if(response['ValidationResultsDTO'] === null) {
+            this.getContainers();
+          }
         },
         error => {
           this.errorMessage = error;
           this.msgs = [];
           this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
-        }
+        },
+        /* onComplete */ 
+        () => this.isLoading = false
       );
 
     this.container = null;
@@ -104,33 +109,34 @@ export class ContainerTableComponent implements OnInit, OnDestroy {
   }
     
   onDelete(id) {
-    console.log("ID: ", id);
     this.container = null;
     this.displayDialog = false;
     this.containerService.deleteContainer(id)
       .subscribe(
         response => {
-          const responseObject = response['Result'];
-          if(responseObject === null) {
-            this.successfulMsgs = [];
-            this.successfulMsgs.push({ severity: 'success', summary: 'Success', detail: "The container was deleted." });
+          console.log("Response from DELETE request: ", response);
+          HelperMethodService.handleResponseMessages(this, response, "The container was deleted.");
+          if(response['ValidationResultsDTO'] === null) {
             this.containers.splice(this.findSelectedContainerIndex(), 1);
-          } else {
-            this.msgs = [];
-            this.errorMessage = responseObject["<ErrorMessage>k__BackingField"];
-            this.msgs.push({ severity: 'error', summary: 'Failed', detail: `${this.errorMessage}` });
-          }
+           }
         },
         error => {
           this.errorMessage = error;
           this.msgs = [];
           this.msgs.push({ severity:'error', summary: 'Unavailable', detail: this.errorMessage });
-        }
+        },
+        /* onComplete */ 
+        () => this.isLoading = false
       );
   }    
 
   onRowSelect(event) {
     this.displayDialog = true;
+    this.container = null;
+    this.containerForm.reset();
+    this.msgs = [];
+    this.msgs.push({severity: 'info', summary: 'Retrieving data', detail: 'Loading the container...'});
+    this.isLoading = true;
 
     this.lookupContainer$ = this.containerService.getContainer(event.data.ContainerKey)
       .subscribe(

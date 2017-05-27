@@ -318,7 +318,7 @@ export class CloningComponent implements OnInit, OnDestroy {
           this.containers = containers.map((container) => {
             return { label: container['ContainerDisplayName'], value: container['ContainerKey'] } 
           });
-          this.containers.unshift({label:'Select Container', value: null});
+          this.containers.unshift({ label:'Select Container', value: null });
         },
         error => {
           this.errorMessage = error;
@@ -344,6 +344,10 @@ export class CloningComponent implements OnInit, OnDestroy {
           if(container['Methods'] !== null) {
             this.container = container;
             this.values = this.getFlattenValues();
+          } else {
+            // if no methods in the container, set cloning to false 
+            this.cloning = false;
+            this.container = null;
           }
         },
         error => {

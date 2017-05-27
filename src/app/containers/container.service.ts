@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Rx';
 export class ContainerService { 
   private containersUrl = "/WS/Container/Containers";
   private containerUrl = "/WS/Container/Container";
-  private containerAndMethodsUrl = "/WS/Container/ContainerAndMethods";
+  private containerAndMethodsUrl = "/WS/Container/CreateUpdateMethods";
   private containerWithMethodsUrl = "/WS/Container/ContainerWithMethods";
   containers: Container[];
 
@@ -42,10 +42,11 @@ export class ContainerService {
   }
 
   updateContainer(container: Container): Observable<Response> {
-    const url = `${this.containerUrl}/${container.ContainerKey}`;
+    console.log("Update container: ", JSON.stringify(container));
+    const url = `${this.containerUrl}`;
     const containerDTO = { ContainerDTO: container };
     return this.http.put(url, JSON.stringify(containerDTO), { headers: this.getHeaders() })
-      .map(response => response.json().data || {})
+      .map(response => response.json())
       .catch(handleError);
   }
 

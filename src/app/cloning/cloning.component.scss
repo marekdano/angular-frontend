@@ -6,6 +6,10 @@
 .input-field {
   width: 12rem;
   margin-left: 5px;
+
+  &.input-new-container {
+  margin-left: 0px;
+}
 }
 
 

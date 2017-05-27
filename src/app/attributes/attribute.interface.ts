@@ -13,7 +13,7 @@ export interface AttributeAndValue {
   ValueConfigId: number,
   AttributeTypeId: number,
   ValueConfig: ValueConfig[],
-  InstanceNo: number,
+  InstanceNo: string,
   LastProcessedTime?: Date,
   LastValue?: string  
 }

@@ -39,8 +39,6 @@ export class UiLayoutSixComponent implements OnInit, OnDestroy {
           this.timeTypes = timeTypes.map((type):SelectItem => {
             return { label: type['Name'], value: type['Id'] }
           });
-          // remove first element which is "current time" 
-          this.timeTypes.shift();
           // add it as a first element
           this.timeTypes.unshift({ label: 'Select Time Type', value: null });
         },

@@ -77,7 +77,7 @@
   </div>
   <footer>
     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-      <button type="button" pButton icon="fa-close" (click)="onDelete(selectedContainer['ContainerKey'])" label="Delete"></button>
+      <button type="button" pButton icon="fa-close" (click)="onDelete(selectedContainer['ContainerKey'])" [disabled]="!containerForm.valid" label="Delete"></button>
       <button type="button" pButton icon="fa-check" (click)="onEdit(containerForm.value)" [disabled]="!containerForm.valid" label="Update"></button>
     </div>
   </footer>

@@ -60,7 +60,7 @@
       </div>
 
       <div class="ui-g-row" *ngIf="displayExtraFields" >
-        <div class="ui-g-6">
+        <div class="ui-g-6 extra-column">
           <label for="seedNumber">Seed Number</label>
           <p-spinner formControlName="SeedNumber" (keypress)="validateInput($event)" [min]="0"></p-spinner>
           <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!containerForm.controls['SeedNumber'].valid && containerForm.controls['SeedNumber'].dirty">
@@ -68,7 +68,7 @@
               Seed Number must be a positive number.
           </div>
         </div> 
-        <div class="ui-g-6">
+        <div class="ui-g-6 extra-column">
           <label for="count">Count</label>
           <p-spinner formControlName="CreateCount" (keypress)="validateInput($event)" [min]="0" [max]="50"></p-spinner>
           <div class="ui-message ui-messages-info ui-corner-all">

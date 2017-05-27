@@ -361,8 +361,7 @@ export class HelperMethodService {
       self.msgs = [];
       let errorMessage;
       response['ValidationResultsDTO'].forEach(error => {
-        // let attemptValueField = error["<AttemptedValue>k__BackingField"];
-        errorMessage = error["<ErrorMessage>k__BackingField"];
+        errorMessage = error["ErrorMessage"];
         self.msgs.push({ severity: 'error', summary: 'Failed', detail: `${errorMessage}` });
       });
     }
